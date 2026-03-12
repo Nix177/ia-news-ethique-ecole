@@ -470,6 +470,32 @@ select option {
   to { transform: rotate(360deg); }
 }
 
+.search-container {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  margin-bottom: 2rem;
+  background: white;
+  border-radius: 50px; /* Style pilule */
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  color: #1a1a1a;
+}
+
+.search-icon {
+  color: var(--text-muted);
+  margin-right: 15px;
+}
+
+.search-container input {
+  border: none;
+  background: none;
+  width: 100%;
+  font-size: 1.1rem;
+  outline: none;
+  color: #1a1a1a;
+}
+
 @media print {
   body {
     background: white;

@@ -31,6 +31,7 @@ function App() {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState('landing')
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     if (step === 'selection') {
@@ -144,8 +145,23 @@ function App() {
               <button className="btn btn-outline" onClick={() => setStep('landing')}>Modifier les réglages</button>
             </header>
 
+            <div className="search-container glass-card">
+              <Search size={20} className="search-icon" />
+              <input 
+                type="text" 
+                placeholder="Filtrer par mot-clé (ex: Climat, Espace, Justice...)" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
             <div className="grid">
-              {news.map((item) => (
+              {news
+                .filter(item => 
+                  item.topicTitle.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                  item.summary.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .map((item) => (
                 <div 
                   key={item.id} 
                   className={`news-card glass-card ${selectedNews?.id === item.id ? 'active' : ''} ${item.isSensitive ? 'sensitive-border' : ''}`}
