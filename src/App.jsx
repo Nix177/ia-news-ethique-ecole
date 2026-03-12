@@ -156,7 +156,16 @@ function App() {
                   <div className="sources-badges-container">
                     {item.isSensitive && <span className="sensitive-tag"><AlertTriangle size={12} /> Sensible</span>}
                     {item.sources?.map((s, idx) => (
-                      <span key={idx} className="source-tag">{getFlag(s.country)} {s.name}</span>
+                      <a 
+                        key={idx} 
+                        href={s.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="source-tag clickable"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <ExternalLink size={12} /> {getFlag(s.country)} {s.name}
+                      </a>
                     ))}
                   </div>
                   <h3>{item.topicTitle}</h3>
