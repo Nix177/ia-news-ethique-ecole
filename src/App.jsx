@@ -78,6 +78,8 @@ function App() {
                   <option value="GLOBAL">🌐 Global / International</option>
                   <option value="FRANCE">🇫🇷 France</option>
                   <option value="SWITZERLAND">🇨🇭 Suisse</option>
+                  <option value="GERMANY">🇩🇪 Allemagne</option>
+                  <option value="USA">🇺🇸 États-Unis</option>
                 </select>
               </div>
               <div className="control-group">
