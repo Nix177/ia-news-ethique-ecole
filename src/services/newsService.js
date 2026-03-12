@@ -63,17 +63,17 @@ export const newsService = {
       
       let data = await response.json();
       
-      // Assurer que chaque item a un champ 'link' à partir de 'url' si nécessaire
-      data = data.map(item => ({
-        ...item,
-        link: item.link || item.url || (item.sources && item.sources[0]?.url) || '#'
-      }));
-
       // Nettoyage de la structure JSON si n8n la renvoie encapsulée
       if (!Array.isArray(data)) {
         const firstKey = Object.keys(data)[0];
         data = data[firstKey] || [];
       }
+
+      // Assurer que chaque item a un champ 'link' à partir de 'url' si nécessaire
+      data = data.map(item => ({
+        ...item,
+        link: item.link || item.url || (item.sources && item.sources[0]?.url) || '#'
+      }));
 
       if (data.length === 0) throw new Error("n8n a renvoyé un tableau vide.");
 
