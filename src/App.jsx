@@ -161,6 +161,24 @@ function App() {
                   </div>
                   <h3>{item.topicTitle}</h3>
                   <p>{item.summary}</p>
+                  
+                  <div className="card-footer" onClick={(e) => e.stopPropagation()}>
+                    <a 
+                      href={item.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="source-link"
+                    >
+                      Lire l'article original ↗
+                    </a>
+
+                    <button className="btn btn-primary btn-small" onClick={() => {
+                      setSelectedNews(item);
+                      handleGenerateSession(item);
+                    }}>
+                      Préparer la séance
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

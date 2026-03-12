@@ -13,6 +13,7 @@ const INITIAL_NEWS = [
     category: 'Technology / Ethics',
     countries: ['GLOBAL', 'FRANCE', 'SWITZERLAND', 'GERMANY'],
     recommendedAges: ['12-13', '14-15'],
+    link: "https://example.com/fr-ai", // Default link
     sources: [
       { name: "Le Temps", country: "SWITZERLAND", url: "https://example.com/ch-ai" },
       { name: "Le Monde", country: "FRANCE", url: "https://example.com/fr-ai" },
@@ -27,6 +28,7 @@ const INITIAL_NEWS = [
     category: 'Society',
     countries: ['GLOBAL', 'FRANCE', 'USA'],
     recommendedAges: ['10-11', '12-13', '14-15'],
+    link: "https://example.com/fr-deconnexion", // Default link
     sources: [
       { name: "France Info", country: "FRANCE", url: "https://example.com/fr-deconnexion" },
       { name: "NPR", country: "USA", url: "https://example.com/us-screens" }
@@ -40,6 +42,7 @@ const INITIAL_NEWS = [
     category: 'Society / Education',
     countries: ['GLOBAL', 'FRANCE', 'SWITZERLAND', 'GERMANY', 'USA'],
     recommendedAges: ['4-5', '6-7', '8-9', '10-11', '12-13', '14-15'],
+    link: "https://www.francetvinfo.fr/societe/education/education-l-interdiction-du-telephone-portable-au-college-pourrait-etre-generalisee_6745196.html",
     sources: [
       { name: "France Info", country: "FRANCE", url: "https://www.francetvinfo.fr/societe/education/education-l-interdiction-du-telephone-portable-au-college-pourrait-etre-generalisee_6745196.html" },
       { name: "RTS Info", country: "SWITZERLAND", url: "https://www.rts.ch/info/suisse/14234053-vers-une-interdiction-des-smartphones-dans-les-ecoles-suisses.html" }
@@ -59,6 +62,12 @@ export const newsService = {
       }
       
       let data = await response.json();
+      
+      // Assurer que chaque item a un champ 'link' à partir de 'url' si nécessaire
+      data = data.map(item => ({
+        ...item,
+        link: item.link || item.url || (item.sources && item.sources[0]?.url) || '#'
+      }));
 
       // Nettoyage de la structure JSON si n8n la renvoie encapsulée
       if (!Array.isArray(data)) {

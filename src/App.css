@@ -225,10 +225,24 @@ select option {
 
 .card-footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.875rem;
-  color: var(--text-muted);
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: auto;
+  gap: 1rem;
+}
+
+.source-link {
+  font-size: 0.8rem;
+  color: var(--primary);
+  text-decoration: none;
+  margin-bottom: 10px;
+  display: inline-block;
+  opacity: 0.8;
+}
+
+.source-link:hover {
+  text-decoration: underline;
+  opacity: 1;
 }
 
 .card-actions {
