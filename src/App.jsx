@@ -329,6 +329,27 @@ function App() {
                     <p>{session.conclusion}</p>
                   </section>
                 )}
+
+                {/* NOUVEAU : LES SOURCES DE LA LEÇON */}
+                {session.sources && session.sources.length > 0 && (
+                  <section className="guide-section sources-box" style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
+                    <h3 style={{ fontSize: '1rem', color: '#64748b', margin: '0 0 10px 0' }}>Sources utilisées pour cette fiche :</h3>
+                    <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
+                      {session.sources.map((src, idx) => (
+                        <li key={idx} style={{ marginBottom: '8px' }}>
+                          <a 
+                            href={src.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            style={{ color: '#0ea5e9', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem' }}
+                          >
+                            <ExternalLink size={14} /> {src.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
               </div>
             </div>
 
