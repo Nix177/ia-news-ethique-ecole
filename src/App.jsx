@@ -423,66 +423,63 @@ function App() {
             </header>
 
             <div className="session-grid">
-              <div className="session-sidebar">
+              {/* 1. RÉSUMÉ DE L'INFO (La base) */}
+              <section className="guide-section news-box">
+                <h3><BookOpen size={20} /> {uiText[language].newsSummaryTitle}</h3>
+                <p>{session.newsSummary}</p>
+              </section>
+
+              {/* 2. OUTIL MÉDIATEUR (Le détour) */}
+              {session.mediatorTool && (
+                <section className="guide-section mediator-box">
+                  <h3>
+                    <Sparkles size={20} /> {uiText[language].mediatorTitle}
+                  </h3>
+                  <p>{session.mediatorTool}</p>
+                </section>
+              )}
+
+              {/* 3. PRÉREQUIS & CONTEXTE (Le cadre) */}
+              <section className="guide-section highlight">
+                <h3><Info size={18} /> {uiText[language].preReqTitle}</h3>
                 
-                {/* PRÉREQUIS & CONTEXTE */}
+                {session.prerequisites?.context && (
+                  <p style={{ marginBottom: '1.5rem' }}>{session.prerequisites.context}</p>
+                )}
+                
+                {session.prerequisites?.vocabulary?.length > 0 && (
+                  <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '1rem', marginBottom: '1.5rem' }}>
+                    <h4 style={{ fontSize: '0.85rem', marginBottom: '10px', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{uiText[language].vocabLabel}</h4>
+                    <ul style={{ fontSize: '0.9rem', paddingLeft: 0, listStyle: 'none', margin: 0 }}>
+                      {session.prerequisites.vocabulary.map((v, i) => (
+                        <li key={i} style={{ marginBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>
+                          <strong style={{ color: '#fff' }}>{v.term}</strong> : {v.definition}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <h4 style={{ fontSize: '0.85rem', color: 'var(--primary)', marginTop: '15px', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>{uiText[language].philoLabel}</h4>
+                <p>{session.theoreticalContext}</p>
+              </section>
+
+              {/* 4. ANALYSE A PRIORI */}
+              <section className="guide-section">
+                <h3><Search size={18} /> {uiText[language].aPrioriTitle}</h3>
+                <p>{session.aPrioriAnalysis}</p>
+              </section>
+
+              {/* 5. MISE EN PERSPECTIVE */}
+              {session.sourceComparison && (
                 <section className="guide-section highlight">
-                  <h3><Info size={18} /> {uiText[language].preReqTitle}</h3>
-                  
-                  {session.prerequisites?.context && (
-                    <p style={{ marginBottom: '1.5rem' }}>{session.prerequisites.context}</p>
-                  )}
-                  
-                  {session.prerequisites?.vocabulary?.length > 0 && (
-                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '1rem', marginBottom: '1.5rem' }}>
-                      <h4 style={{ fontSize: '0.85rem', marginBottom: '10px', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{uiText[language].vocabLabel}</h4>
-                      <ul style={{ fontSize: '0.9rem', paddingLeft: 0, listStyle: 'none', margin: 0 }}>
-                        {session.prerequisites.vocabulary.map((v, i) => (
-                          <li key={i} style={{ marginBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>
-                            <strong style={{ color: '#fff' }}>{v.term}</strong> : {v.definition}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <h4 style={{ fontSize: '0.85rem', color: 'var(--primary)', marginTop: '15px', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>{uiText[language].philoLabel}</h4>
-                  <p>{session.theoreticalContext}</p>
+                  <h3>
+                    <Layers size={18} /> 
+                    {uiText[language].perspectiveTitle}
+                  </h3>
+                  <p>{session.sourceComparison}</p>
                 </section>
-
-                <section className="guide-section">
-                  <h3><Search size={18} /> {uiText[language].aPrioriTitle}</h3>
-                  <p>{session.aPrioriAnalysis}</p>
-                </section>
-              </div>
-
-              <div className="session-main">
-                
-                {/* OUTIL MÉDIATEUR */}
-                {session.mediatorTool && (
-                  <section className="guide-section mediator-box">
-                    <h3>
-                      <Sparkles size={20} /> {uiText[language].mediatorTitle}
-                    </h3>
-                    <p>{session.mediatorTool}</p>
-                  </section>
-                )}
-
-                <section className="guide-section news-box">
-                  <h3><BookOpen size={20} /> {uiText[language].newsSummaryTitle}</h3>
-                  <p>{session.newsSummary}</p>
-                </section>
-
-                {/* NOUVEAU : COMPARAISON DES SOURCES */}
-                {session.sourceComparison && (
-                  <section className="guide-section highlight">
-                    <h3>
-                      <Layers size={18} /> 
-                      {uiText[language].perspectiveTitle}
-                    </h3>
-                    <p>{session.sourceComparison}</p>
-                  </section>
-                )}
+              )}
 
                 <section className="guide-section debate-box">
                   <h3><MessageCircle size={20} /> {uiText[language].debateTitle}</h3>
@@ -528,7 +525,6 @@ function App() {
                   </section>
                 )}
               </div>
-            </div>
 
             <footer className="session-footer">
               <button className="btn btn-outline" onClick={() => { setStep('selection'); setCustomContent(''); setCustomUrl(''); }}>{uiText[language].backToNewsBtn}</button>
