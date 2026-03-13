@@ -26,9 +26,10 @@ export const aiGenerator = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          topicTitle: titleString, // <-- ON ENVOIE LE TEXTE, PLUS L'OBJET
+          topicTitle: titleString,
           sources: newsCluster.sources || [],
-          content: newsCluster.content || summaryString,
+          summary: summaryString, // Résumé de l'IA
+          customArticleText: newsCluster.content || "", // Texte copié-collé par l'utilisateur
           ageRange: ageRange,
           isCustom: newsCluster.isCustom || false,
           language: language

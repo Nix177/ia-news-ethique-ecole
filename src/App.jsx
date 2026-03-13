@@ -154,15 +154,6 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    // Petit délai pour s'assurer que le DOM est prêt après le changement d'état
-    const timer = setTimeout(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      document.body.scrollTop = 0; // Sécurité pour certains navigateurs
-      document.documentElement.scrollTop = 0;
-    }, 50);
-    return () => clearTimeout(timer);
-  }, [step]);
 
   useEffect(() => {
     if (step === 'selection') {
@@ -198,7 +189,14 @@ function App() {
     <div className="container">
       <AnimatePresence mode="wait">
         {step === 'landing' && (
-          <motion.div key="landing" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="hero">
+          <motion.div 
+            key="landing" 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            exit={{ opacity: 0, y: -20 }} 
+            className="hero"
+            onAnimationStart={() => window.scrollTo(0, 0)}
+          >
             <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10 }}>
               <select 
                 value={language} 
@@ -250,7 +248,14 @@ function App() {
         )}
 
         {step === 'selection' && (
-          <motion.div key="selection" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="selection-view">
+          <motion.div 
+            key="selection" 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="selection-view"
+            onAnimationStart={() => window.scrollTo(0, 0)}
+          >
             
             {/* SECTION SUJET SUR MESURE */}
             <div className="custom-link-section">
@@ -308,17 +313,21 @@ function App() {
             <div className="grid">
               {news
                 .filter(item => {
-                  // On récupère le texte dans la bonne langue (avec sécurité si c'est encore une ancienne news en texte simple)
-                  const title = typeof item.topicTitle === 'object' ? item.topicTitle[language] : item.topicTitle;
-                  const summary = typeof item.summary === 'object' ? item.summary[language] : item.summary;
+                  const titleObj = item.topicTitle;
+                  const title = typeof titleObj === 'object' ? (titleObj[language] || titleObj['fr'] || '') : (titleObj || '');
+
+                  const summaryObj = item.summary;
+                  const summary = typeof summaryObj === 'object' ? (summaryObj[language] || summaryObj['fr'] || '') : (summaryObj || '');
                   
                   return (title || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
                          (summary || '').toLowerCase().includes(searchTerm.toLowerCase());
                 })
                 .map((item) => {
-                  // Pareil ici pour l'affichage
-                  const title = typeof item.topicTitle === 'object' ? item.topicTitle[language] : item.topicTitle;
-                  const summary = typeof item.summary === 'object' ? item.summary[language] : item.summary;
+                  const titleObj = item.topicTitle;
+                  const title = typeof titleObj === 'object' ? (titleObj[language] || titleObj['fr'] || '') : (titleObj || '');
+
+                  const summaryObj = item.summary;
+                  const summary = typeof summaryObj === 'object' ? (summaryObj[language] || summaryObj['fr'] || '') : (summaryObj || '');
 
                   return (
                     <div 
@@ -400,7 +409,13 @@ function App() {
         )}
 
         {step === 'session' && session && (
-          <motion.div key="session" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="session-view glass-card">
+          <motion.div 
+            key="session" 
+            initial={{ opacity: 0, y: 30 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="session-view glass-card"
+            onAnimationStart={() => window.scrollTo(0, 0)}
+          >
             
             {/* BANDEAU DE VIGILANCE PÉDAGOGIQUE */}
             {session.pedagogicalWarning && (

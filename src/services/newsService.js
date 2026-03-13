@@ -55,11 +55,10 @@ export const newsService = {
     try {
       // 1. On tente d'appeler le nouveau Workflow A de n8n (Les actus en direct)
       console.log("Tentative de récupération des actus en direct...");
-      const response = await fetch('https://n8n.srv893937.hstgr.cloud/webhook/get-cached-news');
+      const N8N_WEBHOOK_URL = 'https://n8n.srv893937.hstgr.cloud/webhook/get-cached-news';
+      const response = await fetch(N8N_WEBHOOK_URL + `?country=${country}`);
       
-      if (!response.ok) {
-        throw new Error("Le serveur n8n n'a pas répondu correctement.");
-      }
+      if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
       
       let data = await response.json();
       
