@@ -186,6 +186,9 @@ function App() {
                       </a>
                     ))}
                   </div>
+                  <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '8px', fontWeight: '500' }}>
+                    📅 Actu du {item.date}
+                  </p>
                   <h3>{item.topicTitle}</h3>
                   <p>{item.summary}</p>
                   
