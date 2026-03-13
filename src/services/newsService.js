@@ -55,8 +55,9 @@ export const newsService = {
     try {
       // 1. On tente d'appeler le nouveau Workflow A de n8n (Les actus en direct)
       console.log("Tentative de récupération des actus en direct...");
-// N'oublie pas les backticks ( ` ) autour de l'URL pour pouvoir injecter la variable !
+      // N'oublie pas les backticks ( ` ) autour de l'URL pour pouvoir injecter la variable !
       const response = await fetch(`https://n8n.srv893937.hstgr.cloud/webhook/get-daily-news?ageRange=${ageRange}`);      
+      
       if (!response.ok) {
         throw new Error("Le serveur n8n n'a pas répondu correctement.");
       }
@@ -77,11 +78,12 @@ export const newsService = {
 
       if (data.length === 0) throw new Error("n8n a renvoyé un tableau vide.");
 
-      // Filtrage dynamique selon l'âge et le pays
-      const filtered = data.filter(n => 
-        (n.countries.includes(country) || n.countries.includes('GLOBAL')) &&
-        (n.recommendedAges.includes(ageRange) || !n.recommendedAges || n.recommendedAges.length === 0)
-      );
+      // Filtrage dynamique sécurisé (uniquement sur le pays, l'âge est géré par l'IA via n8n)
+      const filtered = data.filter(n => {
+        // Sécurité : si l'IA oublie le champ countries, on le considère comme GLOBAL
+        const itemCountries = n.countries || ['GLOBAL'];
+        return itemCountries.includes(country) || itemCountries.includes('GLOBAL');
+      });
 
       console.log("Succès : Actus en direct chargées !");
       return filtered.length > 0 ? filtered : data;
