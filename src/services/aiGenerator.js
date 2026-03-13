@@ -8,7 +8,7 @@ const AGE_CONFIGS = {
 };
 
 export const aiGenerator = {
-  async generateSession(newsCluster, ageRange) {
+  async generateSession(newsCluster, ageRange, language = 'fr') {
     const N8N_WEBHOOK_URL = 'https://n8n.srv893937.hstgr.cloud/webhook/generate-lesson'; 
 
     try {
@@ -20,7 +20,8 @@ export const aiGenerator = {
           sources: newsCluster.sources || [], 
           content: newsCluster.content,
           ageRange: ageRange,
-          isCustom: newsCluster.isCustom || false // Signal crucial pour n8n
+          isCustom: newsCluster.isCustom || false, // Signal crucial pour n8n
+          language: language
         })
       });
 

@@ -32,6 +32,67 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState('landing')
   const [searchTerm, setSearchTerm] = useState('')
+  const [language, setLanguage] = useState('fr')
+
+  const uiText = {
+    fr: { 
+      badge: "Intelligence Artificielle Pédagogique",
+      title: "Débats Éthiques & Philo pour Enfants", 
+      subtitle: "Transformez l'actualité mondiale en opportunité d'apprentissage, sans tabou, avec la bonne méthode.",
+      countryLabel: "Votre Pays",
+      ageLabel: "Âge des élèves",
+      startBtn: "Voir les actualités",
+      curationTitle: "Curation du jour",
+      curationSub: "Sujets à débattre avec les",
+      backBtn: "Modifier les réglages",
+      searchPlaceholder: "Filtrer par mot-clé (ex: Climat, Espace, Justice...)",
+      prepareBtn: "Préparer la séance",
+      generateBtn: "Générer la séance",
+      generating: "Génération en cours...",
+      customSectionTitle: "Créer une séance sur mesure",
+      customSectionDesc: "Vous avez trouvé un article intéressant ? Collez son lien ou son texte ci-dessous. L'IA analysera votre texte et ira chercher d'autres sources pour créer une mise en perspective.",
+      customUrlLabel: "Lien vers votre article",
+      customTextLabel: "Ou collez le texte brut"
+    },
+    en: { 
+      badge: "Pedagogical Artificial Intelligence",
+      title: "Ethical Debates & Philosophy for Kids", 
+      subtitle: "Transform global news into learning opportunities, without taboos, using the right method.",
+      countryLabel: "Your Country",
+      ageLabel: "Students' Age",
+      startBtn: "See news",
+      curationTitle: "Today's Curation",
+      curationSub: "Topics to discuss with",
+      backBtn: "Change settings",
+      searchPlaceholder: "Filter by keyword (e.g., Climate, Space, Justice...)",
+      prepareBtn: "Prepare Session",
+      generateBtn: "Generate Session",
+      generating: "Generating...",
+      customSectionTitle: "Create custom session",
+      customSectionDesc: "Found an interesting article? Paste its link or text below. AI will analyze your text and search for other sources to provide perspective.",
+      customUrlLabel: "Link to your article",
+      customTextLabel: "Or paste raw text"
+    },
+    de: { 
+      badge: "Pädagogische Künstliche Intelligenz",
+      title: "Ethische Debatten & Philosophie für Kinder", 
+      subtitle: "Verwandeln Sie Weltnachrichten in Lernmöglichkeiten, ohne Tabus, mit der richtigen Methode.",
+      countryLabel: "Ihr Land",
+      ageLabel: "Alter der Schüler",
+      startBtn: "Nachrichten sehen",
+      curationTitle: "Heutige Kuration",
+      curationSub: "Themen zur Diskussion mit",
+      backBtn: "Einstellungen ändern",
+      searchPlaceholder: "Nach Stichwort filtern (z. B. Klima, Weltraum, Gerechtigkeit...)",
+      prepareBtn: "Sitzung vorbereiten",
+      generateBtn: "Sitzung generieren",
+      generating: "Wird geladen...",
+      customSectionTitle: "Maßgeschneiderte Sitzung erstellen",
+      customSectionDesc: "Haben Sie einen interessanten Artikel gefunden? Fügen Sie den Link oder Text unten ein. Die KI analysiert Ihren Text und sucht nach anderen Quellen zur Perspektivierung.",
+      customUrlLabel: "Link zu Ihrem Artikel",
+      customTextLabel: "Oder Rohtext einfügen"
+    }
+  };
 
   useEffect(() => {
     if (step === 'selection') {
@@ -57,7 +118,7 @@ function App() {
     }
     
     setLoading(true)
-    const result = await aiGenerator.generateSession(newsToProcess, ageRange)
+    const result = await aiGenerator.generateSession(newsToProcess, ageRange, language)
     setSession(result)
     setLoading(false)
     setStep('session')
@@ -68,13 +129,34 @@ function App() {
       <AnimatePresence mode="wait">
         {step === 'landing' && (
           <motion.div key="landing" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="hero">
-            <div className="badge"><Sparkles size={14} /> Intelligence Artificielle Pédagogique</div>
-            <h1>Débats Éthiques & Philo pour Enfants</h1>
-            <p className="subtitle">Transformez l'actualité mondiale en opportunité d'apprentissage, sans tabou, avec la bonne méthode.</p>
+            <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10 }}>
+              <select 
+                value={language} 
+                onChange={(e) => setLanguage(e.target.value)}
+                style={{ 
+                  padding: '8px 12px', 
+                  borderRadius: '12px', 
+                  background: 'rgba(255,255,255,0.1)', 
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  color: 'white',
+                  backdropFilter: 'blur(10px)',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  fontWeight: '600'
+                }}
+              >
+                <option value="fr">🇫🇷 Français</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="de">🇩🇪 Deutsch</option>
+              </select>
+            </div>
+            <div className="badge"><Sparkles size={14} /> {uiText[language].badge}</div>
+            <h1>{uiText[language].title}</h1>
+            <p className="subtitle">{uiText[language].subtitle}</p>
             
             <div className="landing-controls glass-card">
               <div className="control-group">
-                <label>Votre Pays</label>
+                <label>{uiText[language].countryLabel}</label>
                 <select value={country} onChange={(e) => setCountry(e.target.value)}>
                   <option value="GLOBAL">🌐 Global / International</option>
                   <option value="FRANCE">🇫🇷 France</option>
@@ -84,7 +166,7 @@ function App() {
                 </select>
               </div>
               <div className="control-group">
-                <label>Âge des élèves</label>
+                <label>{uiText[language].ageLabel}</label>
                 <select value={ageRange} onChange={(e) => setAgeRange(e.target.value)}>
                   {['4-5', '6-7', '8-9', '10-11', '12-13', '14-15'].map(age => (
                     <option key={age} value={age}>{age} ans</option>
@@ -94,7 +176,7 @@ function App() {
             </div>
 
             <button className="btn btn-primary btn-large" onClick={handleStart}>
-              Voir les actualités <ArrowRight size={18} style={{ marginLeft: '10px' }} />
+              {uiText[language].startBtn} <ArrowRight size={18} style={{ marginLeft: '10px' }} />
             </button>
           </motion.div>
         )}
@@ -104,13 +186,13 @@ function App() {
             
             {/* SECTION SUJET SUR MESURE */}
             <div className="custom-link-section">
-              <h3><ExternalLink size={24} /> Créer une séance sur mesure</h3>
+              <h3><ExternalLink size={24} /> {uiText[language].customSectionTitle}</h3>
               <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
-                Vous avez trouvé un article intéressant ? Collez son lien ou son texte ci-dessous. L'IA analysera votre texte et ira chercher d'autres sources pour créer une mise en perspective.
+                {uiText[language].customSectionDesc}
               </p>
               <div className="input-stack">
                 <div className="input-group">
-                  <label>Lien vers votre article</label>
+                  <label>{uiText[language].customUrlLabel}</label>
                   <input 
                     type="url" 
                     placeholder="https://www.letemps.ch/..." 
@@ -123,7 +205,7 @@ function App() {
                   />
                 </div>
                 <div className="input-group">
-                  <label>Ou collez le texte brut</label>
+                  <label>{uiText[language].customTextLabel}</label>
                   <textarea 
                     placeholder="Si l'article est derrière un paywall, collez le texte ici..." 
                     value={customContent}
@@ -139,17 +221,17 @@ function App() {
 
             <header className="selection-header" style={{ marginTop: '4rem' }}>
               <div className="header-titles">
-                <h2>Curation du jour</h2>
-                <p>Sujets à débattre avec les {ageRange} ans</p>
+                <h2>{uiText[language].curationTitle}</h2>
+                <p>{uiText[language].curationSub} {ageRange} ans</p>
               </div>
-              <button className="btn btn-outline" onClick={() => setStep('landing')}>Modifier les réglages</button>
+              <button className="btn btn-outline" onClick={() => setStep('landing')}>{uiText[language].backBtn}</button>
             </header>
 
             <div className="search-container glass-card">
               <Search size={20} className="search-icon" />
               <input 
                 type="text" 
-                placeholder="Filtrer par mot-clé (ex: Climat, Espace, Justice...)" 
+                placeholder={uiText[language].searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -206,7 +288,7 @@ function App() {
                       setSelectedNews(item);
                       handleGenerateSession(item);
                     }}>
-                      Préparer la séance
+                      {uiText[language].prepareBtn}
                     </button>
                   </div>
                 </div>
@@ -219,7 +301,7 @@ function App() {
                 disabled={(!selectedNews && !customUrl && !customContent) || loading} 
                 onClick={() => handleGenerateSession()}
               >
-                {loading ? <Loader2 className="spinner" /> : 'Générer la séance'}
+                {loading ? <Loader2 className="spinner" /> : uiText[language].generateBtn}
               </button>
             </footer>
           </motion.div>
