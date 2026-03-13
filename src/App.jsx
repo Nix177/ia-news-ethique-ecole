@@ -37,13 +37,13 @@ function App() {
     if (step === 'selection') {
       const fetchNews = async () => {
         setLoading(true)
-        const data = await newsService.getLatestNews(country, ageRange)
+        const data = await newsService.getLatestNews(country)
         setNews(data)
         setLoading(false)
       }
       fetchNews()
     }
-  }, [step, country, ageRange])
+  }, [step, country])
 
   const handleStart = () => setStep('selection')
 
