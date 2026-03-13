@@ -299,11 +299,23 @@ function App() {
                           Lire l'article original ↗
                         </a>
 
-                        <button className="btn btn-primary btn-small" onClick={() => {
-                          setSelectedNews(item);
-                          handleGenerateSession(item);
-                        }}>
-                          {uiText[language].prepareBtn}
+                        <button 
+                          className="btn btn-primary btn-small" 
+                          disabled={loading && selectedNews?.id === item.id}
+                          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                          onClick={() => {
+                            setSelectedNews(item);
+                            handleGenerateSession(item);
+                          }}
+                        >
+                          {loading && selectedNews?.id === item.id ? (
+                            <>
+                              <Loader2 size={14} className="spinner" /> 
+                              {uiText[language].generating}
+                            </>
+                          ) : (
+                            uiText[language].prepareBtn
+                          )}
                         </button>
                       </div>
                     </div>
