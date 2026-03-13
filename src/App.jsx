@@ -239,60 +239,72 @@ function App() {
 
             <div className="grid">
               {news
-                .filter(item => 
-                  item.topicTitle.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                  item.summary.toLowerCase().includes(searchTerm.toLowerCase())
-                )
-                .map((item) => (
-                <div 
-                  key={item.id} 
-                  className={`news-card glass-card ${selectedNews?.id === item.id ? 'active' : ''} ${item.isSensitive ? 'sensitive-border' : ''}`}
-                  onClick={() => {
-                    setSelectedNews(item);
-                    setCustomUrl('');
-                    setCustomContent('');
-                  }}
-                >
-                  <div className="sources-badges-container">
-                    {item.isSensitive && <span className="sensitive-tag"><AlertTriangle size={12} /> Sensible</span>}
-                    {item.sources?.map((s, idx) => (
-                      <a 
-                        key={idx} 
-                        href={s.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="source-tag clickable"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <ExternalLink size={12} /> {getFlag(s.country)} {s.name}
-                      </a>
-                    ))}
-                  </div>
-                  <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '8px', fontWeight: '500' }}>
-                    📅 Actu du {item.date}
-                  </p>
-                  <h3>{item.topicTitle}</h3>
-                  <p>{item.summary}</p>
+                .filter(item => {
+                  // On récupère le texte dans la bonne langue (avec sécurité si c'est encore une ancienne news en texte simple)
+                  const title = typeof item.topicTitle === 'object' ? item.topicTitle[language] : item.topicTitle;
+                  const summary = typeof item.summary === 'object' ? item.summary[language] : item.summary;
                   
-                  <div className="card-footer" onClick={(e) => e.stopPropagation()}>
-                    <a 
-                      href={item.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="source-link"
-                    >
-                      Lire l'article original ↗
-                    </a>
+                  return (title || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         (summary || '').toLowerCase().includes(searchTerm.toLowerCase());
+                })
+                .map((item) => {
+                  // Pareil ici pour l'affichage
+                  const title = typeof item.topicTitle === 'object' ? item.topicTitle[language] : item.topicTitle;
+                  const summary = typeof item.summary === 'object' ? item.summary[language] : item.summary;
 
-                    <button className="btn btn-primary btn-small" onClick={() => {
-                      setSelectedNews(item);
-                      handleGenerateSession(item);
-                    }}>
-                      {uiText[language].prepareBtn}
-                    </button>
-                  </div>
-                </div>
-              ))}
+                  return (
+                    <div 
+                      key={item.id} 
+                      className={`news-card glass-card ${selectedNews?.id === item.id ? 'active' : ''} ${item.isSensitive ? 'sensitive-border' : ''}`}
+                      onClick={() => {
+                        setSelectedNews(item);
+                        setCustomUrl('');
+                        setCustomContent('');
+                      }}
+                    >
+                      <div className="sources-badges-container">
+                        {item.isSensitive && <span className="sensitive-tag"><AlertTriangle size={12} /> Sensible</span>}
+                        {item.sources?.map((s, idx) => (
+                          <a 
+                            key={idx} 
+                            href={s.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="source-tag clickable"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <ExternalLink size={12} /> {getFlag(s.country)} {s.name}
+                          </a>
+                        ))}
+                      </div>
+                      <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '8px', fontWeight: '500' }}>
+                        📅 Actu du {item.date}
+                      </p>
+                      
+                      {/* On affiche les variables contenant le texte dans la bonne langue */}
+                      <h3>{title}</h3>
+                      <p>{summary}</p>
+                      
+                      <div className="card-footer" onClick={(e) => e.stopPropagation()}>
+                        <a 
+                          href={item.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="source-link"
+                        >
+                          Lire l'article original ↗
+                        </a>
+
+                        <button className="btn btn-primary btn-small" onClick={() => {
+                          setSelectedNews(item);
+                          handleGenerateSession(item);
+                        }}>
+                          {uiText[language].prepareBtn}
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })}
             </div>
 
             <footer className="selection-footer sticky-footer">
