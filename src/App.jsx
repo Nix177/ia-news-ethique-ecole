@@ -56,7 +56,23 @@ function App() {
       years: "ans",
       countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 France", SWITZERLAND: "🇨🇭 Suisse", GERMANY: "🇩🇪 Allemagne", USA: "🇺🇸 États-Unis" },
       newsDate: "Actu du",
-      readOriginal: "Lire l'article original ↗"
+      readOriginal: "Lire l'article original ↗",
+      warningTitle: "Conseils pour aborder ce sujet sensible",
+      preReqTitle: "Prérequis & Contexte",
+      vocabLabel: "Vocabulaire :",
+      philoLabel: "Notions philosophiques :",
+      aPrioriTitle: "Analyse à Priori",
+      mediatorTitle: "Le Détour Pédagogique",
+      newsSummaryTitle: "Résumé détaillé de l'info",
+      perspectiveTitle: "Mise en perspective des sources",
+      debateTitle: "Déroulé du Débat",
+      problematicLabel: "Problématique :",
+      objectiveLabel: "Objectif :",
+      conclusionTitle: "Synthèse & Conclusion",
+      sourcesCitedTitle: "Sources utilisées pour cette fiche :",
+      backToNewsBtn: "Autre sujet",
+      printBtn: "Imprimer",
+      sheetTitle: "Fiche de préparation détaillée"
     },
     en: { 
       badge: "Pedagogical Artificial Intelligence",
@@ -79,7 +95,23 @@ function App() {
       years: "years old",
       countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 France", SWITZERLAND: "🇨🇭 Switzerland", GERMANY: "🇩🇪 Germany", USA: "🇺🇸 United States" },
       newsDate: "News from",
-      readOriginal: "Read original article ↗"
+      readOriginal: "Read original article ↗",
+      warningTitle: "Advice for tackling this sensitive subject",
+      preReqTitle: "Prerequisites & Context",
+      vocabLabel: "Vocabulary:",
+      philoLabel: "Philosophical concepts:",
+      aPrioriTitle: "A Priori Analysis",
+      mediatorTitle: "The Pedagogical Detour",
+      newsSummaryTitle: "Detailed news summary",
+      perspectiveTitle: "Putting sources into perspective",
+      debateTitle: "Debate Flow",
+      problematicLabel: "Problematic:",
+      objectiveLabel: "Objective:",
+      conclusionTitle: "Synthesis & Conclusion",
+      sourcesCitedTitle: "Sources used for this sheet:",
+      backToNewsBtn: "Another topic",
+      printBtn: "Print",
+      sheetTitle: "Detailed lesson plan"
     },
     de: { 
       badge: "Pädagogische Künstliche Intelligenz",
@@ -102,9 +134,35 @@ function App() {
       years: "Jahre",
       countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 Frankreich", SWITZERLAND: "🇨🇭 Schweiz", GERMANY: "🇩🇪 Deutschland", USA: "🇺🇸 USA" },
       newsDate: "Nachrichten vom",
-      readOriginal: "Originalartikel lesen ↗"
+      readOriginal: "Originalartikel lesen ↗",
+      warningTitle: "Ratschläge für den Umgang mit diesem sensiblen Thema",
+      preReqTitle: "Voraussetzungen & Kontext",
+      vocabLabel: "Vokabular:",
+      philoLabel: "Philosophische Begriffe:",
+      aPrioriTitle: "A-Priori-Analyse",
+      mediatorTitle: "Der pädagogische Umweg",
+      newsSummaryTitle: "Detaillierte Nachrichtenzusammenfassung",
+      perspectiveTitle: "Quellen in Relation setzen",
+      debateTitle: "Ablauf der Debatte",
+      problematicLabel: "Problematik:",
+      objectiveLabel: "Ziel:",
+      conclusionTitle: "Synthese & Schlussfolgerung",
+      sourcesCitedTitle: "Für dieses Blatt verwendete Quellen:",
+      backToNewsBtn: "Anderes Thema",
+      printBtn: "Drucken",
+      sheetTitle: "Detaillierter Vorbereitungsbogen"
     }
   };
+
+  useEffect(() => {
+    // Petit délai pour s'assurer que le DOM est prêt après le changement d'état
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.body.scrollTop = 0; // Sécurité pour certains navigateurs
+      document.documentElement.scrollTop = 0;
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [step]);
 
   useEffect(() => {
     if (step === 'selection') {
@@ -349,7 +407,7 @@ function App() {
               <div className="pedagogical-warning-box">
                 <div className="warning-header">
                   <AlertCircle size={20} />
-                  <h4>Conseils pour aborder ce sujet sensible</h4>
+                  <h4>{uiText[language].warningTitle}</h4>
                 </div>
                 <p>{session.pedagogicalWarning}</p>
               </div>
@@ -357,8 +415,8 @@ function App() {
 
             <header className="session-header">
               <div className="meta">
-                <span className="age-badge">{ageRange} ans</span>
-                <span>Fiche de préparation détaillée</span>
+                <span className="age-badge">{ageRange} {uiText[language].years}</span>
+                <span>{uiText[language].sheetTitle}</span>
               </div>
               <h2>{session.title}</h2>
               <p className="intro-text-large">{session.introduction}</p>
@@ -369,31 +427,31 @@ function App() {
                 
                 {/* PRÉREQUIS & CONTEXTE */}
                 <section className="guide-section highlight">
-                  <h3><Info size={18} /> Prérequis & Contexte</h3>
+                  <h3><Info size={18} /> {uiText[language].preReqTitle}</h3>
                   
                   {session.prerequisites?.context && (
-                    <p style={{ marginBottom: '15px' }}>{session.prerequisites.context}</p>
+                    <p style={{ marginBottom: '1.5rem' }}>{session.prerequisites.context}</p>
                   )}
                   
                   {session.prerequisites?.vocabulary?.length > 0 && (
-                    <div style={{ backgroundColor: 'rgba(255,255,255,0.5)', padding: '10px', borderRadius: '8px', marginBottom: '15px' }}>
-                      <h4 style={{ fontSize: '0.9rem', marginBottom: '8px', color: 'var(--primary)' }}>Vocabulaire à maîtriser :</h4>
-                      <ul style={{ fontSize: '0.9rem', paddingLeft: '15px', margin: 0 }}>
+                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '1rem', marginBottom: '1.5rem' }}>
+                      <h4 style={{ fontSize: '0.85rem', marginBottom: '10px', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{uiText[language].vocabLabel}</h4>
+                      <ul style={{ fontSize: '0.9rem', paddingLeft: 0, listStyle: 'none', margin: 0 }}>
                         {session.prerequisites.vocabulary.map((v, i) => (
-                          <li key={i} style={{ marginBottom: '5px' }}>
-                            <strong>{v.term}</strong> : {v.definition}
+                          <li key={i} style={{ marginBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>
+                            <strong style={{ color: '#fff' }}>{v.term}</strong> : {v.definition}
                           </li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  <h4 style={{ fontSize: '0.9rem', color: 'var(--primary)', marginTop: '15px' }}>Notions philosophiques :</h4>
+                  <h4 style={{ fontSize: '0.85rem', color: 'var(--primary)', marginTop: '15px', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>{uiText[language].philoLabel}</h4>
                   <p>{session.theoreticalContext}</p>
                 </section>
 
                 <section className="guide-section">
-                  <h3><Search size={18} /> Analyse à Priori</h3>
+                  <h3><Search size={18} /> {uiText[language].aPrioriTitle}</h3>
                   <p>{session.aPrioriAnalysis}</p>
                 </section>
               </div>
@@ -402,41 +460,41 @@ function App() {
                 
                 {/* OUTIL MÉDIATEUR */}
                 {session.mediatorTool && (
-                  <section className="guide-section" style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', padding: '20px', borderRadius: '12px', marginBottom: '20px' }}>
-                    <h3 style={{ color: '#166534', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, marginBottom: '10px' }}>
-                      <Sparkles size={20} /> Le Détour Pédagogique
+                  <section className="guide-section mediator-box">
+                    <h3>
+                      <Sparkles size={20} /> {uiText[language].mediatorTitle}
                     </h3>
-                    <p style={{ color: '#15803d', margin: 0 }}>{session.mediatorTool}</p>
+                    <p>{session.mediatorTool}</p>
                   </section>
                 )}
 
                 <section className="guide-section news-box">
-                  <h3><BookOpen size={20} /> Résumé détaillé de l'info</h3>
+                  <h3><BookOpen size={20} /> {uiText[language].newsSummaryTitle}</h3>
                   <p>{session.newsSummary}</p>
                 </section>
 
                 {/* NOUVEAU : COMPARAISON DES SOURCES */}
                 {session.sourceComparison && (
-                  <section className="guide-section" style={{ backgroundColor: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.2)', padding: '20px', borderRadius: '12px', marginBottom: '20px' }}>
-                    <h3 style={{ color: 'var(--primary)', margin: 0, marginBottom: '10px', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <section className="guide-section highlight">
+                    <h3>
                       <Layers size={18} /> 
-                      Mise en perspective des sources
+                      {uiText[language].perspectiveTitle}
                     </h3>
-                    <p style={{ margin: 0, fontSize: '0.95rem' }}>{session.sourceComparison}</p>
+                    <p>{session.sourceComparison}</p>
                   </section>
                 )}
 
                 <section className="guide-section debate-box">
-                  <h3><MessageCircle size={20} /> Déroulé du Débat</h3>
+                  <h3><MessageCircle size={20} /> {uiText[language].debateTitle}</h3>
                   <div className="main-question-card">
-                    <h4>Problématique :</h4>
+                    <h4>{uiText[language].problematicLabel}</h4>
                     <p>"{session.mainQuestion}"</p>
                   </div>
                   <div className="discussion-guide">
                     {session.discussionGuide?.map((item, i) => (
                       <div key={i} className="guide-item">
                         <p><strong>{i + 1}. {item.question}</strong></p>
-                        <p className="q-purpose">🎯 Objectif : {item.purpose}</p>
+                        <p className="q-purpose">🎯 {uiText[language].objectiveLabel} {item.purpose}</p>
                       </div>
                     ))}
                   </div>
@@ -444,15 +502,15 @@ function App() {
                 
                 {session.conclusion && (
                   <section className="guide-section conclusion-box" style={{ marginTop: '20px' }}>
-                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Flag size={20} /> Synthèse & Conclusion</h3>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Flag size={20} /> {uiText[language].conclusionTitle}</h3>
                     <p>{session.conclusion}</p>
                   </section>
                 )}
 
                 {/* NOUVEAU : LES SOURCES DE LA LEÇON */}
                 {session.sources && session.sources.length > 0 && (
-                  <section className="guide-section sources-box" style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
-                    <h3 style={{ fontSize: '1rem', color: '#64748b', margin: '0 0 10px 0' }}>Sources utilisées pour cette fiche :</h3>
+                  <section className="guide-section sources-box">
+                    <h3>{uiText[language].sourcesCitedTitle}</h3>
                     <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
                       {session.sources.map((src, idx) => (
                         <li key={idx} style={{ marginBottom: '8px' }}>
@@ -473,8 +531,8 @@ function App() {
             </div>
 
             <footer className="session-footer">
-              <button className="btn btn-outline" onClick={() => { setStep('selection'); setCustomContent(''); setCustomUrl(''); }}>Autre sujet</button>
-              <button className="btn btn-primary" onClick={() => window.print()}>Imprimer</button>
+              <button className="btn btn-outline" onClick={() => { setStep('selection'); setCustomContent(''); setCustomUrl(''); }}>{uiText[language].backToNewsBtn}</button>
+              <button className="btn btn-primary" onClick={() => window.print()}>{uiText[language].printBtn}</button>
             </footer>
           </motion.div>
         )}

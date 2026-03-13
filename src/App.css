@@ -300,158 +300,190 @@ select option {
   border-top: 1px solid var(--border);
 }
 
-/* Session View */
+/* Session View & Pedagogical Sheet Style */
 .session-view {
-  max-width: 900px;
-  margin: 4rem auto;
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 3rem;
+  border-radius: 2rem;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
 }
 
 .session-header {
   margin-bottom: 3rem;
+  text-align: center;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 2rem;
+  padding-bottom: 2.5rem;
 }
 
 .session-header .meta {
   display: flex;
-  gap: 2rem;
-  font-size: 0.875rem;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 0.85rem;
   color: var(--primary);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
   margin-bottom: 1rem;
 }
 
-.session-header h2 {
-  font-size: 2.5rem;
-  line-height: 1.2;
+.age-badge {
+  background: var(--primary);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 6px;
 }
 
-.session-content {
-  display: flex;
-  flex-direction: column;
+.session-header h2 {
+  font-size: 2.2rem;
+  line-height: 1.25;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.intro-text-large {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.session-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
   gap: 3rem;
+}
+
+.guide-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+.guide-section:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
 .guide-section h3 {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  color: var(--secondary);
-  font-size: 1.25rem;
+  gap: 10px;
+  font-size: 1.05rem;
   font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-.intro-text {
-  font-size: 1.1rem;
-  font-style: italic;
-  color: var(--text-muted);
-  line-height: 1.7;
-  padding-left: 1rem;
-  border-left: 2px solid var(--glass);
-}
-
-.guide-section ul {
-  list-style: none;
-  padding-left: 1rem;
-}
-
-.guide-section ul li {
-  position: relative;
-  padding-bottom: 0.5rem;
-}
-
-.guide-section ul li::before {
-  content: "•";
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--primary);
-  position: absolute;
-  left: -1rem;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
 }
 
-.adapted-text {
-  background: var(--glass);
-  padding: 2rem;
-  border-radius: 1rem;
-  font-size: 1.125rem;
+.guide-section p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+}
+
+/* Specific styling for highlighted or colored sections */
+.guide-section.highlight {
   border-left: 4px solid var(--primary);
 }
 
-.question-item {
-  display: flex;
-  gap: 1.5rem;
-  background: var(--glass);
-  padding: 1.5rem;
+.pedagogical-warning-box {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: 1rem;
-  margin-bottom: 1rem;
-}
-
-.q-num {
-  width: 2rem;
-  height: 2rem;
-  background: var(--primary);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-weight: 700;
-  font-size: 0.875rem;
-  color: white;
-}
-
-.followup-item {
-  background: var(--glass);
-  padding: 1rem 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px dashed var(--border);
-  margin-bottom: 0.75rem;
-}
-
-.links-list {
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.useful-link {
+.warning-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: var(--glass);
-  padding: 1rem 1.5rem;
-  border-radius: 0.75rem;
-  text-decoration: none;
-  color: var(--text);
-  font-weight: 500;
-  transition: all 0.2s;
-  border: 1px solid transparent;
+  gap: 10px;
+  color: #f59e0b;
 }
 
-.useful-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--primary);
-  transform: translateX(4px);
+.warning-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
-.priori-box {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+.pedagogical-warning-box p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #fbbf24;
+  line-height: 1.5;
+}
+
+/* Mediator / Special Tool box */
+.mediator-box {
+  background: rgba(16, 185, 129, 0.05) !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+}
+
+/* Debate & Question styling */
+.main-question-card {
+  background: var(--primary-gradient);
   padding: 2rem;
   border-radius: 1rem;
-  border: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
-.priori-box::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--secondary);
+.main-question-card h4 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+.main-question-card p {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.guide-item {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.guide-item:last-child {
+  border-bottom: none;
+}
+
+.q-purpose {
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+/* Sources utilized styling */
+.sources-box {
+  background: rgba(148, 163, 184, 0.05) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+}
+
+.sources-box li a {
+  transition: all 0.2s;
+}
+
+.sources-box li a:hover {
+  color: #38bdf8 !important;
+  transform: translateX(4px);
 }
 
 .session-footer {
