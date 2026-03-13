@@ -9,21 +9,26 @@ const AGE_CONFIGS = {
 
 export const aiGenerator = {
   async generateSession(newsCluster, ageRange, language = 'fr') {
-    const N8N_WEBHOOK_URL = 'https://n8n.srv893937.hstgr.cloud/webhook/generate-lesson'; 
+    const N8N_WEBHOOK_URL = 'https://n8n.srv893937.hstgr.cloud/webhook/generate-lesson';
 
-    // Sécurité : on extrait le texte simple depuis l'objet multilingue
-    const titleString = typeof newsCluster.topicTitle === 'object' 
-      ? (newsCluster.topicTitle[language] || newsCluster.topicTitle['fr']) 
-      : newsCluster.topicTitle;
+    // 1. Extraire le titre sous forme de texte simple (pour éviter le crash de l'objet)
+    const titleString = typeof newsCluster.topicTitle === 'object'
+      ? (newsCluster.topicTitle[language] || newsCluster.topicTitle['fr'] || 'Sujet')
+      : (newsCluster.topicTitle || 'Sujet');
+
+    // 2. Extraire le résumé sous forme de texte simple
+    const summaryString = typeof newsCluster.summary === 'object'
+      ? (newsCluster.summary[language] || newsCluster.summary['fr'] || '')
+      : (newsCluster.summary || '');
 
     try {
       const response = await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          topicTitle: titleString, // <-- ON ENVOIE LE TEXTE SIMPLE ICI
-          sources: newsCluster.sources || [], 
-          content: newsCluster.content,
+        body: JSON.stringify({
+          topicTitle: titleString, // <-- ON ENVOIE LE TEXTE, PLUS L'OBJET
+          sources: newsCluster.sources || [],
+          content: newsCluster.content || summaryString,
           ageRange: ageRange,
           isCustom: newsCluster.isCustom || false,
           language: language
@@ -36,23 +41,25 @@ export const aiGenerator = {
         throw new Error("Erreur réseau");
       }
     } catch (error) {
-      console.warn("Mode secours activé pour :", newsCluster.topicTitle);
-      return this._getMockSession(newsCluster, ageRange);
+      console.warn("Mode secours activé pour :", titleString);
+      return this._getMockSession(newsCluster, ageRange, titleString, summaryString);
     }
   },
 
-  _getMockSession(cluster, ageRange) {
+  _getMockSession(cluster, ageRange, titleString, summaryString) {
     const config = AGE_CONFIGS[ageRange] || AGE_CONFIGS['8-9'];
-    const isSensitive = cluster.topicTitle?.toLowerCase().match(/guerre|conflit|mort|accident|justice|prison/);
-    
+
+    // On utilise "titleString" (qui est bien du texte) pour éviter le crash !
+    const isSensitive = titleString.toLowerCase().match(/guerre|conflit|mort|accident|justice|prison/);
+
     return {
-      title: cluster.topicTitle || "Analyse de l'info",
+      title: titleString || "Analyse de l'info",
       introduction: `Séance philo adaptée pour les ${ageRange} ans.`,
-      pedagogicalWarning: isSensitive 
-        ? "Ce sujet touche à des thèmes complexes. Angle conseillé : privilégier la compréhension des causes et les solutions collectives plutôt que les détails factuels anxiogènes." 
+      pedagogicalWarning: isSensitive
+        ? "Ce sujet touche à des thèmes complexes. Angle conseillé : privilégier la compréhension des causes et les solutions collectives plutôt que les détails factuels anxiogènes."
         : null,
       theoreticalContext: `Nous aborderons les notions de faits vs opinions et le concept de ${config.focus}.`,
-      newsSummary: cluster.summary || "L'actualité traitée sous un angle accessible.",
+      newsSummary: summaryString || "L'actualité traitée sous un angle accessible.",
       sourceComparison: cluster.isCustom ? "L'IA a comparé votre texte avec d'autres sources. Une mise en perspective a été générée." : null,
       aPrioriAnalysis: "Les élèves pourraient projeter leurs propres inquiétudes. Il s'agira de transformer l'émotion en questionnement éthique.",
       mainQuestion: `En quoi cet événement nous parle-t-il de ${config.focus} ?`,

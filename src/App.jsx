@@ -54,7 +54,9 @@ function App() {
       customUrlLabel: "Lien vers votre article",
       customTextLabel: "Ou collez le texte brut",
       years: "ans",
-      countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 France", SWITZERLAND: "🇨🇭 Suisse", GERMANY: "🇩🇪 Allemagne", USA: "🇺🇸 États-Unis" }
+      countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 France", SWITZERLAND: "🇨🇭 Suisse", GERMANY: "🇩🇪 Allemagne", USA: "🇺🇸 États-Unis" },
+      newsDate: "Actu du",
+      readOriginal: "Lire l'article original ↗"
     },
     en: { 
       badge: "Pedagogical Artificial Intelligence",
@@ -75,7 +77,9 @@ function App() {
       customUrlLabel: "Link to your article",
       customTextLabel: "Or paste raw text",
       years: "years old",
-      countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 France", SWITZERLAND: "🇨🇭 Switzerland", GERMANY: "🇩🇪 Germany", USA: "🇺🇸 United States" }
+      countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 France", SWITZERLAND: "🇨🇭 Switzerland", GERMANY: "🇩🇪 Germany", USA: "🇺🇸 United States" },
+      newsDate: "News from",
+      readOriginal: "Read original article ↗"
     },
     de: { 
       badge: "Pädagogische Künstliche Intelligenz",
@@ -96,7 +100,9 @@ function App() {
       customUrlLabel: "Link zu Ihrem Artikel",
       customTextLabel: "Oder Rohtext einfügen",
       years: "Jahre",
-      countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 Frankreich", SWITZERLAND: "🇨🇭 Schweiz", GERMANY: "🇩🇪 Deutschland", USA: "🇺🇸 USA" }
+      countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 Frankreich", SWITZERLAND: "🇨🇭 Schweiz", GERMANY: "🇩🇪 Deutschland", USA: "🇺🇸 USA" },
+      newsDate: "Nachrichten vom",
+      readOriginal: "Originalartikel lesen ↗"
     }
   };
 
@@ -282,7 +288,7 @@ function App() {
                         ))}
                       </div>
                       <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '8px', fontWeight: '500' }}>
-                        📅 Actu du {item.date}
+                        📅 {uiText[language].newsDate} {item.date}
                       </p>
                       
                       {/* On affiche les variables contenant le texte dans la bonne langue */}
@@ -296,7 +302,7 @@ function App() {
                           rel="noopener noreferrer" 
                           className="source-link"
                         >
-                          Lire l'article original ↗
+                          {uiText[language].readOriginal}
                         </a>
 
                         <button 
