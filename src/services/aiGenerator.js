@@ -11,16 +11,21 @@ export const aiGenerator = {
   async generateSession(newsCluster, ageRange, language = 'fr') {
     const N8N_WEBHOOK_URL = 'https://n8n.srv893937.hstgr.cloud/webhook/generate-lesson'; 
 
+    // Sécurité : on extrait le texte simple depuis l'objet multilingue
+    const titleString = typeof newsCluster.topicTitle === 'object' 
+      ? (newsCluster.topicTitle[language] || newsCluster.topicTitle['fr']) 
+      : newsCluster.topicTitle;
+
     try {
       const response = await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          topicTitle: newsCluster.topicTitle,
+          topicTitle: titleString, // <-- ON ENVOIE LE TEXTE SIMPLE ICI
           sources: newsCluster.sources || [], 
           content: newsCluster.content,
           ageRange: ageRange,
-          isCustom: newsCluster.isCustom || false, // Signal crucial pour n8n
+          isCustom: newsCluster.isCustom || false,
           language: language
         })
       });

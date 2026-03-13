@@ -52,7 +52,9 @@ function App() {
       customSectionTitle: "Créer une séance sur mesure",
       customSectionDesc: "Vous avez trouvé un article intéressant ? Collez son lien ou son texte ci-dessous. L'IA analysera votre texte et ira chercher d'autres sources pour créer une mise en perspective.",
       customUrlLabel: "Lien vers votre article",
-      customTextLabel: "Ou collez le texte brut"
+      customTextLabel: "Ou collez le texte brut",
+      years: "ans",
+      countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 France", SWITZERLAND: "🇨🇭 Suisse", GERMANY: "🇩🇪 Allemagne", USA: "🇺🇸 États-Unis" }
     },
     en: { 
       badge: "Pedagogical Artificial Intelligence",
@@ -71,7 +73,9 @@ function App() {
       customSectionTitle: "Create custom session",
       customSectionDesc: "Found an interesting article? Paste its link or text below. AI will analyze your text and search for other sources to provide perspective.",
       customUrlLabel: "Link to your article",
-      customTextLabel: "Or paste raw text"
+      customTextLabel: "Or paste raw text",
+      years: "years old",
+      countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 France", SWITZERLAND: "🇨🇭 Switzerland", GERMANY: "🇩🇪 Germany", USA: "🇺🇸 United States" }
     },
     de: { 
       badge: "Pädagogische Künstliche Intelligenz",
@@ -90,7 +94,9 @@ function App() {
       customSectionTitle: "Maßgeschneiderte Sitzung erstellen",
       customSectionDesc: "Haben Sie einen interessanten Artikel gefunden? Fügen Sie den Link oder Text unten ein. Die KI analysiert Ihren Text und sucht nach anderen Quellen zur Perspektivierung.",
       customUrlLabel: "Link zu Ihrem Artikel",
-      customTextLabel: "Oder Rohtext einfügen"
+      customTextLabel: "Oder Rohtext einfügen",
+      years: "Jahre",
+      countries: { GLOBAL: "🌐 Global / International", FRANCE: "🇫🇷 Frankreich", SWITZERLAND: "🇨🇭 Schweiz", GERMANY: "🇩🇪 Deutschland", USA: "🇺🇸 USA" }
     }
   };
 
@@ -158,18 +164,16 @@ function App() {
               <div className="control-group">
                 <label>{uiText[language].countryLabel}</label>
                 <select value={country} onChange={(e) => setCountry(e.target.value)}>
-                  <option value="GLOBAL">🌐 Global / International</option>
-                  <option value="FRANCE">🇫🇷 France</option>
-                  <option value="SWITZERLAND">🇨🇭 Suisse</option>
-                  <option value="GERMANY">🇩🇪 Allemagne</option>
-                  <option value="USA">🇺🇸 États-Unis</option>
+                  {Object.entries(uiText[language].countries).map(([code, name]) => (
+                    <option key={code} value={code}>{name}</option>
+                  ))}
                 </select>
               </div>
               <div className="control-group">
                 <label>{uiText[language].ageLabel}</label>
                 <select value={ageRange} onChange={(e) => setAgeRange(e.target.value)}>
                   {['4-5', '6-7', '8-9', '10-11', '12-13', '14-15'].map(age => (
-                    <option key={age} value={age}>{age} ans</option>
+                    <option key={age} value={age}>{age} {uiText[language].years}</option>
                   ))}
                 </select>
               </div>
