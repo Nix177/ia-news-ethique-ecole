@@ -615,28 +615,6 @@ select option {
   display: block;
   image-rendering: high-quality;
 }
-
-.gif-hint {
-  text-align: center;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.9rem;
-  z-index: 1;
-  padding: 1rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-}
-
-.gif-hint code {
-  display: inline-block;
-  margin-top: 0.5rem;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-}
-
 .tutorial-step {
   display: flex;
   gap: 1.25rem;

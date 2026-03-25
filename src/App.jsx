@@ -257,10 +257,6 @@ function App() {
               
               <div className="tutorial-slideshow">
                 <div className="tutorial-gif-placeholder">
-                  <div className="gif-hint">
-                    <p>Animation de l'étape {tutorialStep + 1} à placer ici</p>
-                    <code>public/{tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.mp4</code>
-                  </div>
                   <video 
                     key={tutorialStep}
                     src={`${import.meta.env.BASE_URL}${tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.mp4`} 
