@@ -641,6 +641,17 @@ function App() {
             </header>
 
             <div className="session-grid">
+              {/* NOUVEAU : LE CHOC DES VALEURS */}
+              {session.conflictingValues && (
+                <div className="card" style={{ marginBottom: '1.5rem', borderLeft: '4px solid var(--secondary)', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '1rem' }}>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--secondary)', marginBottom: '0.5rem' }}>
+                    <Layers size={20} />
+                    Le Choc des Valeurs
+                  </h3>
+                  <p style={{ marginTop: '0.5rem', fontWeight: '500', color: '#fff', fontSize: '1.05rem', lineHeight: '1.6' }}>{session.conflictingValues}</p>
+                </div>
+              )}
+
               {/* 1. RÉSUMÉ DE L'INFO (La base) */}
               <section className="guide-section news-box">
                 <h3><BookOpen size={20} /> {uiText[language].newsSummaryTitle}</h3>
@@ -715,6 +726,30 @@ function App() {
                   </div>
                 </section>
                 
+                {/* NOUVEAU : ANTICIPATION DES ÉLÈVES (Bouées de sauvetage) */}
+                {session.studentAnticipation && session.studentAnticipation.length > 0 && (
+                  <section className="guide-section" style={{ background: 'rgba(236, 72, 153, 0.05)', borderColor: 'rgba(236, 72, 153, 0.2)', marginBottom: '1.5rem' }}>
+                    <h3 style={{ color: 'var(--secondary)' }}>
+                      <AlertTriangle size={20} /> Anticipation & Bouées de sauvetage
+                    </h3>
+                    <p style={{ fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--text-muted)' }}>
+                      Comment rebondir philosophiquement si un élève réagit de manière abrupte :
+                    </p>
+                    <div className="anticipation-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      {session.studentAnticipation.map((anticipation, i) => (
+                        <div key={i} style={{ padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '0.5rem', borderLeft: '3px solid var(--secondary)' }}>
+                          <p style={{ fontSize: '0.95rem', marginBottom: '0.5rem' }}>
+                            <strong style={{ color: '#fca5a5' }}>Si un élève dit :</strong> "{anticipation.probableReaction}"
+                          </p>
+                          <p style={{ fontSize: '0.95rem' }}>
+                            <strong style={{ color: '#86efac' }}>Relancez avec :</strong> "{anticipation.teacherRebound}"
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
                 {session.conclusion && (
                   <section className="guide-section conclusion-box" style={{ marginTop: '20px' }}>
                     <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Flag size={20} /> {uiText[language].conclusionTitle}</h3>
