@@ -253,9 +253,9 @@ function App() {
                 <div className="tutorial-gif-placeholder">
                   <div className="gif-hint">
                     <p>Animation de l'étape {tutorialStep + 1} à placer ici</p>
-                    <code>public/step{tutorialStep + 1}.webp</code>
+                    <code>public/step{tutorialStep + 1}.gif</code>
                   </div>
-                  <img src={`/step${tutorialStep + 1}.webp`} alt={`Etape ${tutorialStep + 1}`} onError={(e) => e.target.style.display='none'} />
+                  <img src={`/step${tutorialStep + 1}.gif`} alt={`Etape ${tutorialStep + 1}`} onError={(e) => e.target.style.display='none'} />
                 </div>
 
                 <AnimatePresence mode="wait">
