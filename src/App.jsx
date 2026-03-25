@@ -261,7 +261,7 @@ function App() {
                     <p>Animation de l'étape {tutorialStep + 1} à placer ici</p>
                     <code>public/{tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.gif</code>
                   </div>
-                  <img src={`/${tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.gif`} alt={`Etape ${tutorialStep + 1}`} onError={(e) => e.target.style.display='none'} />
+                  <img src={`${import.meta.env.BASE_URL}${tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.gif`} alt={`Etape ${tutorialStep + 1}`} onError={(e) => e.target.style.display='none'} />
                 </div>
 
                 <AnimatePresence mode="wait">
