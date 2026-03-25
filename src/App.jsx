@@ -448,6 +448,28 @@ function App() {
                   />
                 </div>
               </div>
+
+              {/* BOUTON GÉNÉRER SPÉCIFIQUE AU SUR-MESURE */}
+              <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+                <button 
+                  className="btn btn-primary" 
+                  disabled={(!customUrl && !customContent) || loading} 
+                  onClick={() => handleGenerateSession()}
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  {loading && (customUrl || customContent) ? (
+                    <>
+                      <Loader2 size={16} className="spinner" /> 
+                      {uiText[language].generating}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles size={16} />
+                      {uiText[language].generateBtn}
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
             <header className="selection-header" style={{ marginTop: '4rem' }}>
