@@ -33,6 +33,7 @@ function App() {
   const [step, setStep] = useState('landing')
   const [searchTerm, setSearchTerm] = useState('')
   const [language, setLanguage] = useState('fr')
+  const [showTutorial, setShowTutorial] = useState(true)
 
   const uiText = {
     fr: { 
@@ -72,7 +73,16 @@ function App() {
       sourcesCitedTitle: "Sources utilisées pour cette fiche :",
       backToNewsBtn: "Autre sujet",
       printBtn: "Imprimer",
-      sheetTitle: "Fiche de préparation détaillée"
+      sheetTitle: "Fiche de préparation détaillée",
+      tutorialTitle: "Bienvenue sur Débats Éthiques & Philo ! 🎓",
+      tutorialStep1Title: "Choisissez l'Actu",
+      tutorialStep1Desc: "Sélectionnez votre pays et l'âge de vos élèves, puis parcourez les actualités du jour triées pour leur potentiel philosophique.",
+      tutorialStep2Title: "Leçon Sur Mesure",
+      tutorialStep2Desc: "Vous avez déjà un article en tête ? Collez son lien ou son texte dans la zone 'Sur Mesure'.",
+      tutorialStep3Title: "Générez le Débat",
+      tutorialStep3Desc: "L'IA prépare une fiche complète : contexte, vocabulaire, 'détour pédagogique' (pour aborder les sujets sensibles en douceur) et questions de relance.",
+      tutorialGotItBtn: "J'ai compris, on y va !",
+      helpTab: "Aide"
     },
     en: { 
       badge: "Pedagogical Artificial Intelligence",
@@ -111,7 +121,16 @@ function App() {
       sourcesCitedTitle: "Sources used for this sheet:",
       backToNewsBtn: "Another topic",
       printBtn: "Print",
-      sheetTitle: "Detailed lesson plan"
+      sheetTitle: "Detailed lesson plan",
+      tutorialTitle: "Welcome to Ethical Debates & Philo! 🎓",
+      tutorialStep1Title: "Choose the News",
+      tutorialStep1Desc: "Select your country and students' age, then browse today's news sorted by philosophical potential.",
+      tutorialStep2Title: "Custom Lesson",
+      tutorialStep2Desc: "Already have an article in mind? Paste its link or text in the 'Custom' area.",
+      tutorialStep3Title: "Generate Debate",
+      tutorialStep3Desc: "AI prepares a complete sheet: context, vocabulary, 'pedagogical detour' (to tackle sensitive subjects smoothly), and follow-up questions.",
+      tutorialGotItBtn: "Got it, let's go!",
+      helpTab: "Help"
     },
     de: { 
       badge: "Pädagogische Künstliche Intelligenz",
@@ -150,7 +169,16 @@ function App() {
       sourcesCitedTitle: "Für dieses Blatt verwendete Quellen:",
       backToNewsBtn: "Anderes Thema",
       printBtn: "Drucken",
-      sheetTitle: "Detaillierter Vorbereitungsbogen"
+      sheetTitle: "Detaillierter Vorbereitungsbogen",
+      tutorialTitle: "Willkommen bei Ethische Debatten! 🎓",
+      tutorialStep1Title: "Nachrichten auswählen",
+      tutorialStep1Desc: "Wählen Sie Ihr Land und das Alter der Schüler, durchsuchen Sie dann die Nachrichten nach philosophischem Potenzial.",
+      tutorialStep2Title: "Maßgeschneiderte Lektion",
+      tutorialStep2Desc: "Haben Sie bereits einen Artikel im Kopf? Fügen Sie den Link oder Text im Bereich 'Maßgeschneidert' ein.",
+      tutorialStep3Title: "Debatte generieren",
+      tutorialStep3Desc: "Die KI erstellt ein komplettes Blatt: Kontext, Vokabular, 'pädagogischer Umweg' (für sensible Themen) und Folgefragen.",
+      tutorialGotItBtn: "Verstanden, los geht's!",
+      helpTab: "Hilfe"
     }
   };
 
@@ -187,6 +215,75 @@ function App() {
 
   return (
     <div className="container">
+      {/* ONBOARDING TUTORIAL MODAL */}
+      <AnimatePresence>
+        {showTutorial && (
+          <motion.div 
+            className="tutorial-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowTutorial(false)}
+          >
+            <motion.div 
+              className="tutorial-modal glass-card"
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()} // Évite la fermeture en cliquant dans le modal
+            >
+              <h2>{uiText[language].tutorialTitle}</h2>
+              
+              <div className="tutorial-step">
+                <div className="step-icon"><Newspaper size={24} /></div>
+                <div>
+                  <h4>1. {uiText[language].tutorialStep1Title}</h4>
+                  <p>{uiText[language].tutorialStep1Desc}</p>
+                </div>
+              </div>
+
+              <div className="tutorial-step">
+                <div className="step-icon"><ExternalLink size={24} /></div>
+                <div>
+                  <h4>2. {uiText[language].tutorialStep2Title}</h4>
+                  <p>{uiText[language].tutorialStep2Desc}</p>
+                </div>
+              </div>
+
+              <div className="tutorial-step">
+                <div className="step-icon"><MessageCircle size={24} /></div>
+                <div>
+                  <h4>3. {uiText[language].tutorialStep3Title}</h4>
+                  <p>{uiText[language].tutorialStep3Desc}</p>
+                </div>
+              </div>
+
+              <button className="btn btn-primary btn-large" style={{ width: '100%', marginTop: '1.5rem', justifyContent: 'center' }} onClick={() => setShowTutorial(false)}>
+                {uiText[language].tutorialGotItBtn} <CheckCircle2 size={20} style={{ marginLeft: '8px' }} />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* FLOATING HELP TAB */}
+      <AnimatePresence>
+        {!showTutorial && (
+          <motion.div 
+            className="help-tab"
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 50, opacity: 0 }}
+            onClick={() => setShowTutorial(true)}
+            whileHover={{ scale: 1.05, x: -5 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <HelpCircle size={20} />
+            <span>{uiText[language].helpTab}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence mode="wait">
         {step === 'landing' && (
           <motion.div 
