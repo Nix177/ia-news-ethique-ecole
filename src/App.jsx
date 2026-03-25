@@ -259,9 +259,17 @@ function App() {
                 <div className="tutorial-gif-placeholder">
                   <div className="gif-hint">
                     <p>Animation de l'étape {tutorialStep + 1} à placer ici</p>
-                    <code>public/{tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.gif</code>
+                    <code>public/{tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.mp4</code>
                   </div>
-                  <img src={`${import.meta.env.BASE_URL}${tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.gif`} alt={`Etape ${tutorialStep + 1}`} onError={(e) => e.target.style.display='none'} />
+                  <video 
+                    key={tutorialStep}
+                    src={`${import.meta.env.BASE_URL}${tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.mp4`} 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline 
+                    style={{ width: '100%', height: 'auto', display: 'block', zIndex: 10, position: 'relative' }}
+                  />
                 </div>
 
                 <AnimatePresence mode="wait">
