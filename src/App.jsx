@@ -77,11 +77,13 @@ function App() {
       sheetTitle: "Fiche de préparation détaillée",
       tutorialTitle: "Bienvenue sur Débats Éthiques & Philo ! 🎓",
       tutorialStep1Title: "Choisissez l'actu",
-      tutorialStep1Desc: "Sélectionnez votre pays et l'âge de vos élèves, puis parcourez les actualités du jour triées pour leur potentiel philosophique.",
-      tutorialStep2Title: "Leçon sur mesure",
-      tutorialStep2Desc: "Vous avez déjà un article en tête ? Collez son lien ou son texte dans la zone 'Sur mesure'.",
-      tutorialStep3Title: "Générez le débat",
-      tutorialStep3Desc: "L'IA prépare une fiche complète : contexte, vocabulaire, 'détour pédagogique' (pour aborder les sujets sensibles en douceur) et questions de relance.",
+      tutorialStep1Desc: "Sélectionnez votre pays et l'âge de vos élèves, puis parcourez les actualités du jour.",
+      tutorialStep2Title: "Option A : Sélectionnez un article",
+      tutorialStep2Desc: "Cliquez sur 'Préparer la séance' sous n'importe quel article de la curation du jour.",
+      tutorialStep3Title: "Option B : Leçon sur mesure",
+      tutorialStep3Desc: "Vous avez déjà un article en tête ? Collez son lien ou son texte dans la zone 'Sur mesure'.",
+      tutorialStep4Title: "Générez le débat",
+      tutorialStep4Desc: "L'IA prépare une fiche complète : contexte, vocabulaire, 'détour pédagogique' (pour aborder les sujets sensibles) et questions.",
       tutorialGotItBtn: "J'ai compris, on y va !",
       tutorialNextBtn: "Suivant",
       tutorialPrevBtn: "Précédent",
@@ -127,11 +129,13 @@ function App() {
       sheetTitle: "Detailed lesson plan",
       tutorialTitle: "Welcome to Ethical Debates & Philo! 🎓",
       tutorialStep1Title: "Choose the news",
-      tutorialStep1Desc: "Select your country and students' age, then browse today's news sorted by philosophical potential.",
-      tutorialStep2Title: "Custom lesson",
-      tutorialStep2Desc: "Already have an article in mind? Paste its link or text in the 'Custom' area.",
-      tutorialStep3Title: "Generate debate",
-      tutorialStep3Desc: "AI prepares a complete sheet: context, vocabulary, 'pedagogical detour' (to tackle sensitive subjects smoothly), and follow-up questions.",
+      tutorialStep1Desc: "Select your country and students' age, then browse today's news.",
+      tutorialStep2Title: "Option A: Select an article",
+      tutorialStep2Desc: "Click on 'Prepare Session' under any article from today's curation.",
+      tutorialStep3Title: "Option B: Custom lesson",
+      tutorialStep3Desc: "Already have an article in mind? Paste its link or text in the 'Custom' area.",
+      tutorialStep4Title: "Generate debate",
+      tutorialStep4Desc: "AI prepares a complete sheet: context, vocabulary, 'pedagogical detour' (for sensitive topics), and follow-up questions.",
       tutorialGotItBtn: "Got it, let's go!",
       tutorialNextBtn: "Next",
       tutorialPrevBtn: "Previous",
@@ -177,11 +181,13 @@ function App() {
       sheetTitle: "Detaillierter Vorbereitungsbogen",
       tutorialTitle: "Willkommen bei Ethische Debatten! 🎓",
       tutorialStep1Title: "Nachrichten auswählen",
-      tutorialStep1Desc: "Wählen Sie Ihr Land und das Alter der Schüler, durchsuchen Sie dann die Nachrichten nach philosophischem Potenzial.",
-      tutorialStep2Title: "Maßgeschneiderte Lektion",
-      tutorialStep2Desc: "Haben Sie bereits einen Artikel im Kopf? Fügen Sie den Link oder Text im Bereich 'Maßgeschneidert' ein.",
-      tutorialStep3Title: "Debatte generieren",
-      tutorialStep3Desc: "Die KI erstellt ein komplettes Blatt: Kontext, Vokabular, 'pädagogischer Umweg' (für sensible Themen) und Folgefragen.",
+      tutorialStep1Desc: "Wählen Sie Ihr Land und das Alter der Schüler, durchsuchen Sie dann die Nachrichten.",
+      tutorialStep2Title: "Option A: Artikel auswählen",
+      tutorialStep2Desc: "Klicken Sie auf 'Sitzung vorbereiten' unter einem beliebigen Artikel aus der heutigen Auswahl.",
+      tutorialStep3Title: "Option B: Maßgeschneiderte Lektion",
+      tutorialStep3Desc: "Haben Sie bereits einen Artikel im Kopf? Fügen Sie den Link oder Text im Bereich 'Maßgeschneidert' ein.",
+      tutorialStep4Title: "Debatte generieren",
+      tutorialStep4Desc: "Die KI erstellt ein komplettes Blatt: Kontext, Vokabular, 'pädagogischer Umweg' und Folgefragen.",
       tutorialGotItBtn: "Verstanden, los geht's!",
       tutorialNextBtn: "Weiter",
       tutorialPrevBtn: "Zurück",
@@ -253,9 +259,9 @@ function App() {
                 <div className="tutorial-gif-placeholder">
                   <div className="gif-hint">
                     <p>Animation de l'étape {tutorialStep + 1} à placer ici</p>
-                    <code>public/step{tutorialStep + 1}.gif</code>
+                    <code>public/{tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.gif</code>
                   </div>
-                  <img src={`/step${tutorialStep + 1}.gif`} alt={`Etape ${tutorialStep + 1}`} onError={(e) => e.target.style.display='none'} />
+                  <img src={`/${tutorialStep === 0 ? "step1" : tutorialStep === 1 ? "step2alt" : tutorialStep === 2 ? "step2" : "step3"}.gif`} alt={`Etape ${tutorialStep + 1}`} onError={(e) => e.target.style.display='none'} />
                 </div>
 
                 <AnimatePresence mode="wait">
@@ -269,8 +275,8 @@ function App() {
                     </motion.div>
                   )}
                   {tutorialStep === 1 && (
-                    <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="tutorial-step active">
-                      <div className="step-icon"><ExternalLink size={24} /></div>
+                    <motion.div key="step2a" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="tutorial-step active">
+                      <div className="step-icon"><Newspaper size={24} /></div>
                       <div>
                         <h4>2. {uiText[language].tutorialStep2Title}</h4>
                         <p>{uiText[language].tutorialStep2Desc}</p>
@@ -278,11 +284,20 @@ function App() {
                     </motion.div>
                   )}
                   {tutorialStep === 2 && (
-                    <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="tutorial-step active">
-                      <div className="step-icon"><MessageCircle size={24} /></div>
+                    <motion.div key="step2b" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="tutorial-step active">
+                      <div className="step-icon"><ExternalLink size={24} /></div>
                       <div>
                         <h4>3. {uiText[language].tutorialStep3Title}</h4>
                         <p>{uiText[language].tutorialStep3Desc}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                  {tutorialStep === 3 && (
+                    <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="tutorial-step active">
+                      <div className="step-icon"><MessageCircle size={24} /></div>
+                      <div>
+                        <h4>4. {uiText[language].tutorialStep4Title}</h4>
+                        <p>{uiText[language].tutorialStep4Desc}</p>
                       </div>
                     </motion.div>
                   )}
@@ -291,7 +306,7 @@ function App() {
 
               <div className="tutorial-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem' }}>
                 <div className="tutorial-dots" style={{ display: 'flex', gap: '8px' }}>
-                  {[0, 1, 2].map(idx => (
+                  {[0, 1, 2, 3].map(idx => (
                     <div 
                       key={idx} 
                       onClick={() => setTutorialStep(idx)}
@@ -311,7 +326,7 @@ function App() {
                     </button>
                   )}
                   
-                  {tutorialStep < 2 ? (
+                  {tutorialStep < 3 ? (
                     <button className="btn btn-primary" style={{ padding: '8px 16px' }} onClick={() => setTutorialStep(prev => prev + 1)}>
                       {uiText[language].tutorialNextBtn} <ArrowRight size={16} style={{ marginLeft: '6px' }} />
                     </button>
