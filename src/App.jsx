@@ -6,7 +6,7 @@ import {
   GraduationCap, Newspaper, ArrowRight, CheckCircle2, 
   AlertCircle, HelpCircle, Loader2, Sparkles, 
   BookOpen, RefreshCcw, ExternalLink, Search, Layers, 
-  MessageCircle, Info, Flag, AlertTriangle
+  MessageCircle, Info, Flag, AlertTriangle, X
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -34,6 +34,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [language, setLanguage] = useState('fr')
   const [showTutorial, setShowTutorial] = useState(true)
+  const [tutorialStep, setTutorialStep] = useState(0)
 
   const uiText = {
     fr: { 
@@ -75,13 +76,15 @@ function App() {
       printBtn: "Imprimer",
       sheetTitle: "Fiche de préparation détaillée",
       tutorialTitle: "Bienvenue sur Débats Éthiques & Philo ! 🎓",
-      tutorialStep1Title: "Choisissez l'Actu",
+      tutorialStep1Title: "Choisissez l'actu",
       tutorialStep1Desc: "Sélectionnez votre pays et l'âge de vos élèves, puis parcourez les actualités du jour triées pour leur potentiel philosophique.",
-      tutorialStep2Title: "Leçon Sur Mesure",
-      tutorialStep2Desc: "Vous avez déjà un article en tête ? Collez son lien ou son texte dans la zone 'Sur Mesure'.",
-      tutorialStep3Title: "Générez le Débat",
+      tutorialStep2Title: "Leçon sur mesure",
+      tutorialStep2Desc: "Vous avez déjà un article en tête ? Collez son lien ou son texte dans la zone 'Sur mesure'.",
+      tutorialStep3Title: "Générez le débat",
       tutorialStep3Desc: "L'IA prépare une fiche complète : contexte, vocabulaire, 'détour pédagogique' (pour aborder les sujets sensibles en douceur) et questions de relance.",
       tutorialGotItBtn: "J'ai compris, on y va !",
+      tutorialNextBtn: "Suivant",
+      tutorialPrevBtn: "Précédent",
       helpTab: "Aide"
     },
     en: { 
@@ -123,13 +126,15 @@ function App() {
       printBtn: "Print",
       sheetTitle: "Detailed lesson plan",
       tutorialTitle: "Welcome to Ethical Debates & Philo! 🎓",
-      tutorialStep1Title: "Choose the News",
+      tutorialStep1Title: "Choose the news",
       tutorialStep1Desc: "Select your country and students' age, then browse today's news sorted by philosophical potential.",
-      tutorialStep2Title: "Custom Lesson",
+      tutorialStep2Title: "Custom lesson",
       tutorialStep2Desc: "Already have an article in mind? Paste its link or text in the 'Custom' area.",
-      tutorialStep3Title: "Generate Debate",
+      tutorialStep3Title: "Generate debate",
       tutorialStep3Desc: "AI prepares a complete sheet: context, vocabulary, 'pedagogical detour' (to tackle sensitive subjects smoothly), and follow-up questions.",
       tutorialGotItBtn: "Got it, let's go!",
+      tutorialNextBtn: "Next",
+      tutorialPrevBtn: "Previous",
       helpTab: "Help"
     },
     de: { 
@@ -178,6 +183,8 @@ function App() {
       tutorialStep3Title: "Debatte generieren",
       tutorialStep3Desc: "Die KI erstellt ein komplettes Blatt: Kontext, Vokabular, 'pädagogischer Umweg' (für sensible Themen) und Folgefragen.",
       tutorialGotItBtn: "Verstanden, los geht's!",
+      tutorialNextBtn: "Weiter",
+      tutorialPrevBtn: "Zurück",
       helpTab: "Hilfe"
     }
   };
@@ -230,37 +237,91 @@ function App() {
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              onClick={(e) => e.stopPropagation()} // Évite la fermeture en cliquant dans le modal
+              onClick={(e) => e.stopPropagation()} 
             >
+              <button 
+                className="close-modal-btn" 
+                onClick={() => { setShowTutorial(false); setTutorialStep(0); }}
+                aria-label="Fermer"
+              >
+                <X size={20} />
+              </button>
+
               <h2>{uiText[language].tutorialTitle}</h2>
               
-              <div className="tutorial-step">
-                <div className="step-icon"><Newspaper size={24} /></div>
-                <div>
-                  <h4>1. {uiText[language].tutorialStep1Title}</h4>
-                  <p>{uiText[language].tutorialStep1Desc}</p>
+              <div className="tutorial-slideshow">
+                <div className="tutorial-gif-placeholder">
+                  <div className="gif-hint">
+                    <p>Animation de l'étape {tutorialStep + 1} à placer ici</p>
+                    <code>public/step{tutorialStep + 1}.gif</code>
+                  </div>
+                  <img src={`/step${tutorialStep + 1}.gif`} alt={`Etape ${tutorialStep + 1}`} onError={(e) => e.target.style.display='none'} />
                 </div>
+
+                <AnimatePresence mode="wait">
+                  {tutorialStep === 0 && (
+                    <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="tutorial-step active">
+                      <div className="step-icon"><Newspaper size={24} /></div>
+                      <div>
+                        <h4>1. {uiText[language].tutorialStep1Title}</h4>
+                        <p>{uiText[language].tutorialStep1Desc}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                  {tutorialStep === 1 && (
+                    <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="tutorial-step active">
+                      <div className="step-icon"><ExternalLink size={24} /></div>
+                      <div>
+                        <h4>2. {uiText[language].tutorialStep2Title}</h4>
+                        <p>{uiText[language].tutorialStep2Desc}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                  {tutorialStep === 2 && (
+                    <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="tutorial-step active">
+                      <div className="step-icon"><MessageCircle size={24} /></div>
+                      <div>
+                        <h4>3. {uiText[language].tutorialStep3Title}</h4>
+                        <p>{uiText[language].tutorialStep3Desc}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
-              <div className="tutorial-step">
-                <div className="step-icon"><ExternalLink size={24} /></div>
-                <div>
-                  <h4>2. {uiText[language].tutorialStep2Title}</h4>
-                  <p>{uiText[language].tutorialStep2Desc}</p>
+              <div className="tutorial-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem' }}>
+                <div className="tutorial-dots" style={{ display: 'flex', gap: '8px' }}>
+                  {[0, 1, 2].map(idx => (
+                    <div 
+                      key={idx} 
+                      onClick={() => setTutorialStep(idx)}
+                      style={{ 
+                        width: '8px', height: '8px', borderRadius: '50%', 
+                        background: tutorialStep === idx ? 'var(--primary)' : 'rgba(255,255,255,0.2)',
+                        cursor: 'pointer', transition: 'all 0.2s'
+                      }} 
+                    />
+                  ))}
+                </div>
+
+                <div className="tutorial-controls" style={{ display: 'flex', gap: '8px' }}>
+                  {tutorialStep > 0 && (
+                    <button className="btn btn-outline" style={{ padding: '8px 16px' }} onClick={() => setTutorialStep(prev => prev - 1)}>
+                      {uiText[language].tutorialPrevBtn}
+                    </button>
+                  )}
+                  
+                  {tutorialStep < 2 ? (
+                    <button className="btn btn-primary" style={{ padding: '8px 16px' }} onClick={() => setTutorialStep(prev => prev + 1)}>
+                      {uiText[language].tutorialNextBtn} <ArrowRight size={16} style={{ marginLeft: '6px' }} />
+                    </button>
+                  ) : (
+                    <button className="btn btn-primary" style={{ padding: '8px 16px' }} onClick={() => { setShowTutorial(false); setTutorialStep(0); }}>
+                      {uiText[language].tutorialGotItBtn} <CheckCircle2 size={16} style={{ marginLeft: '6px' }} />
+                    </button>
+                  )}
                 </div>
               </div>
-
-              <div className="tutorial-step">
-                <div className="step-icon"><MessageCircle size={24} /></div>
-                <div>
-                  <h4>3. {uiText[language].tutorialStep3Title}</h4>
-                  <p>{uiText[language].tutorialStep3Desc}</p>
-                </div>
-              </div>
-
-              <button className="btn btn-primary btn-large" style={{ width: '100%', marginTop: '1.5rem', justifyContent: 'center' }} onClick={() => setShowTutorial(false)}>
-                {uiText[language].tutorialGotItBtn} <CheckCircle2 size={20} style={{ marginLeft: '8px' }} />
-              </button>
             </motion.div>
           </motion.div>
         )}
