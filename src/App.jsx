@@ -657,18 +657,27 @@ function App() {
                     >
                       <div className="sources-badges-container">
                         {item.isSensitive && <span className="sensitive-tag"><AlertTriangle size={12} /> Sensible</span>}
-                        {item.sources?.map((s, idx) => (
-                          <a 
-                            key={idx} 
-                            href={s.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="source-tag clickable"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <ExternalLink size={12} /> {getFlag(s.country)} {s.name}
-                          </a>
-                        ))}
+                        {item.sources?.map((s, idx) => {
+                          // Sécurité : on s'assure que le nom est une string
+                          const sourceName = typeof s.name === 'object' 
+                            ? (Object.keys(s.name)[0] || 'Source') 
+                            : (s.name || 'Lien');
+
+                          return (
+                            <a 
+                              key={idx} 
+                              href={s.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="source-tag clickable"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <ExternalLink size={12} /> 
+                              {getFlag(typeof s.country === 'object' ? s.country[0] : s.country)} 
+                              {sourceName}
+                            </a>
+                          );
+                        })}
                       </div>
                       <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '8px', fontWeight: '500' }}>
                         📅 {uiText[language].newsDate} {item.date}
@@ -867,18 +876,24 @@ function App() {
                   <section className="guide-section sources-box">
                     <h3>{uiText[language].sourcesCitedTitle}</h3>
                     <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
-                      {session.sources.map((src, idx) => (
-                        <li key={idx} style={{ marginBottom: '8px' }}>
-                          <a 
-                            href={src.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            style={{ color: '#0ea5e9', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem' }}
-                          >
-                            <ExternalLink size={14} /> {src.name}
-                          </a>
-                        </li>
-                      ))}
+                      {session.sources.map((src, idx) => {
+                        const sourceName = typeof src.name === 'object' 
+                          ? (Object.keys(src.name)[0] || 'Source') 
+                          : (src.name || 'Lien');
+
+                        return (
+                          <li key={idx} style={{ marginBottom: '8px' }}>
+                            <a 
+                              href={src.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              style={{ color: '#0ea5e9', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem' }}
+                            >
+                              <ExternalLink size={14} /> {sourceName}
+                            </a>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </section>
                 )}
