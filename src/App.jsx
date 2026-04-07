@@ -35,6 +35,7 @@ function App() {
   const [language, setLanguage] = useState('fr')
   const [showTutorial, setShowTutorial] = useState(true)
   const [tutorialStep, setTutorialStep] = useState(0)
+  const [activeCategory, setActiveCategory] = useState('ALL')
 
   const uiText = {
     fr: { 
@@ -87,7 +88,24 @@ function App() {
       tutorialGotItBtn: "J'ai compris, on y va !",
       tutorialNextBtn: "Suivant",
       tutorialPrevBtn: "Précédent",
-      helpTab: "Aide"
+      helpTab: "Aide",
+      howStep1Title: "Choisissez un sujet",
+      howStep1Desc: "Parcourez l'actu du jour ou collez votre propre article.",
+      howStep2Title: "L'IA analyse",
+      howStep2Desc: "Croisement de sources, adaptation à l'âge, détour pédagogique.",
+      howStep3Title: "Débattez en classe",
+      howStep3Desc: "Obtenez une fiche complète prête à l'emploi.",
+      catAll: 'Tous',
+      catSport: '🏆 Sport & Jeux',
+      catJustice: '⚖️ Justice & Lois',
+      catNature: '🌍 Nature & Planète',
+      catTech: '🚀 Écrans & Futur',
+      catIdentity: '👤 Identité & Émotions',
+      catHealth: '🍎 Corps & Santé',
+      catCulture: '🎨 Arts & Culture',
+      catTruth: '🕵️ Vérité & Info',
+      catMoney: '💰 Argent & Métiers',
+      catSociety: '🤝 Vivre ensemble'
     },
     en: { 
       badge: "Pedagogical Artificial Intelligence",
@@ -139,7 +157,24 @@ function App() {
       tutorialGotItBtn: "Got it, let's go!",
       tutorialNextBtn: "Next",
       tutorialPrevBtn: "Previous",
-      helpTab: "Help"
+      helpTab: "Help",
+      howStep1Title: "Pick a topic",
+      howStep1Desc: "Browse today's news or paste your own article.",
+      howStep2Title: "AI analyzes",
+      howStep2Desc: "Cross-referencing sources, age adaptation, pedagogical detour.",
+      howStep3Title: "Debate in class",
+      howStep3Desc: "Get a complete, ready-to-use lesson plan.",
+      catAll: 'All',
+      catSport: '🏆 Sports & Games',
+      catJustice: '⚖️ Justice & Laws',
+      catNature: '🌍 Nature & Planet',
+      catTech: '🚀 Screens & Future',
+      catIdentity: '👤 Identity & Emotions',
+      catHealth: '🍎 Body & Health',
+      catCulture: '🎨 Arts & Culture',
+      catTruth: '🕵️ Truth & Info',
+      catMoney: '💰 Money & Jobs',
+      catSociety: '🤝 Living together'
     },
     de: { 
       badge: "Pädagogische Künstliche Intelligenz",
@@ -191,7 +226,24 @@ function App() {
       tutorialGotItBtn: "Verstanden, los geht's!",
       tutorialNextBtn: "Weiter",
       tutorialPrevBtn: "Zurück",
-      helpTab: "Hilfe"
+      helpTab: "Hilfe",
+      howStep1Title: "Thema wählen",
+      howStep1Desc: "Durchsuchen Sie die Nachrichten oder fügen Sie Ihren eigenen Artikel ein.",
+      howStep2Title: "KI analysiert",
+      howStep2Desc: "Quellenabgleich, Altersanpassung, pädagogischer Umweg.",
+      howStep3Title: "In der Klasse debattieren",
+      howStep3Desc: "Erhalten Sie einen vollständigen, sofort einsetzbaren Leitfaden.",
+      catAll: 'Alle',
+      catSport: '🏆 Sport & Spiele',
+      catJustice: '⚖️ Justiz & Gesetze',
+      catNature: '🌍 Natur & Planet',
+      catTech: '🚀 Bildschirme & Zukunft',
+      catIdentity: '👤 Identität & Emotionen',
+      catHealth: '🍎 Körper & Gesundheit',
+      catCulture: '🎨 Kunst & Kultur',
+      catTruth: '🕵️ Wahrheit & Info',
+      catMoney: '💰 Geld & Berufe',
+      catSociety: '🤝 Zusammenleben'
     }
   };
 
@@ -209,6 +261,28 @@ function App() {
   }, [step, country])
 
   const handleStart = () => setStep('selection')
+
+  const getArticleCategory = (item) => {
+    if (!item || typeof item !== 'object') return 'SOCIETY';
+    const titleStr = typeof item.topicTitle === 'object' ? (item.topicTitle[language] || item.topicTitle['fr'] || '') : (item.topicTitle || '');
+    const summaryStr = typeof item.summary === 'object' ? (item.summary[language] || item.summary['fr'] || '') : (item.summary || '');
+    const content = (titleStr + ' ' + summaryStr).toLowerCase();
+    if (content.match(/sport|foot|boxe|jo|olympique|match|joueur|athlète|médaille|équipe|jeu|stade/)) return 'SPORT';
+    if (content.match(/justice|loi|règle|tribunal|police|triche|droit|interdit|procès|juge|prison|vol|crime/)) return 'JUSTICE';
+    if (content.match(/nature|climat|écologie|animal|animaux|météo|pollution|eau|forêt|planète|terre|environnement/)) return 'NATURE';
+    if (content.match(/tech|écran|internet|ia|robot|espace|science|futur|téléphone|réseau|virtuel|algorithme/)) return 'TECH';
+    if (content.match(/identité|émotion|peur|joie|différence|genre|fille|garçon|sentiment|amour|tristesse|sexisme/)) return 'IDENTITY';
+    if (content.match(/santé|maladie|hôpital|médecin|alimentation|nourriture|handicap|corps|soin|virus/)) return 'HEALTH';
+    if (content.match(/art|musique|film|livre|histoire|peinture|musée|artiste|culture|beauté|cinéma/)) return 'CULTURE';
+    if (content.match(/vrai|faux|rumeur|mensonge|secret|fake|croyance|information|journaliste|complot/)) return 'TRUTH';
+    if (content.match(/argent|riche|pauvre|métier|travail|acheter|vendre|prix|économie|entreprise|salaire/)) return 'MONEY';
+    return 'SOCIETY';
+  };
+
+  const filteredNews = news.filter(item => {
+    if (activeCategory === 'ALL') return true;
+    return getArticleCategory(item) === activeCategory;
+  });
 
   const handleGenerateSession = async (item = null) => {
     // Si on a un lien ou un texte custom, on force isCustom: true
@@ -350,16 +424,16 @@ function App() {
       <AnimatePresence>
         {!showTutorial && (
           <motion.div 
-            className="help-tab"
-            initial={{ x: 50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 50, opacity: 0 }}
+            className="help-fab"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
             onClick={() => setShowTutorial(true)}
-            whileHover={{ scale: 1.05, x: -5 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            title={uiText[language].helpTab}
           >
-            <HelpCircle size={20} />
-            <span>{uiText[language].helpTab}</span>
+            <HelpCircle size={22} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -379,14 +453,14 @@ function App() {
                 value={language} 
                 onChange={(e) => setLanguage(e.target.value)}
                 style={{ 
-                  padding: '8px 12px', 
+                  padding: '10px 16px', 
                   borderRadius: '12px', 
-                  background: 'rgba(255,255,255,0.1)', 
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: 'rgba(255,255,255,0.15)', 
+                  border: '1px solid rgba(255,255,255,0.2)',
                   color: 'white',
                   backdropFilter: 'blur(10px)',
                   cursor: 'pointer',
-                  fontSize: '0.9rem',
+                  fontSize: '1rem',
                   fontWeight: '600'
                 }}
               >
@@ -415,6 +489,26 @@ function App() {
                     <option key={age} value={age}>{age} {uiText[language].years}</option>
                   ))}
                 </select>
+              </div>
+            </div>
+
+            <div className="how-it-works">
+              <div className="how-step">
+                <div className="how-icon"><Newspaper size={22} /></div>
+                <h4>{uiText[language].howStep1Title}</h4>
+                <p>{uiText[language].howStep1Desc}</p>
+              </div>
+              <div className="how-arrow"><ArrowRight size={16} /></div>
+              <div className="how-step">
+                <div className="how-icon"><Sparkles size={22} /></div>
+                <h4>{uiText[language].howStep2Title}</h4>
+                <p>{uiText[language].howStep2Desc}</p>
+              </div>
+              <div className="how-arrow"><ArrowRight size={16} /></div>
+              <div className="how-step">
+                <div className="how-icon"><MessageCircle size={22} /></div>
+                <h4>{uiText[language].howStep3Title}</h4>
+                <p>{uiText[language].howStep3Desc}</p>
               </div>
             </div>
 
@@ -494,7 +588,7 @@ function App() {
             <header className="selection-header" style={{ marginTop: '4rem' }}>
               <div className="header-titles">
                 <h2>{uiText[language].curationTitle}</h2>
-                <p>{uiText[language].curationSub} {ageRange} ans</p>
+                <p>{uiText[language].countries[country]} · {ageRange} {uiText[language].years}</p>
               </div>
               <button className="btn btn-outline" onClick={() => setStep('landing')}>{uiText[language].backBtn}</button>
             </header>
@@ -509,8 +603,34 @@ function App() {
               />
             </div>
 
+            <div className="category-filters" style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+              {['ALL', 'SPORT', 'JUSTICE', 'NATURE', 'TECH', 'IDENTITY', 'HEALTH', 'CULTURE', 'TRUTH', 'MONEY', 'SOCIETY'].map(cat => {
+                const label = uiText[language][`cat${cat.charAt(0) + cat.slice(1).toLowerCase()}`] || cat;
+                return (
+                  <button 
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    style={{
+                      padding: '0.4rem 0.8rem',
+                      borderRadius: '2rem',
+                      border: activeCategory === cat ? 'none' : '1px solid var(--border-color)',
+                      background: activeCategory === cat ? 'var(--primary)' : 'var(--glass)',
+                      color: activeCategory === cat ? 'white' : 'var(--text-color)',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                      fontWeight: activeCategory === cat ? '600' : 'normal',
+                      transition: 'all 0.2s ease',
+                      boxShadow: activeCategory === cat ? '0 4px 12px rgba(236, 72, 153, 0.3)' : 'none'
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+
             <div className="grid">
-              {news
+              {filteredNews
                 .filter(item => {
                   const titleObj = item.topicTitle;
                   const title = typeof titleObj === 'object' ? (titleObj[language] || titleObj['fr'] || '') : (titleObj || '');
@@ -531,12 +651,7 @@ function App() {
                   return (
                     <div 
                       key={item.id} 
-                      className={`news-card glass-card ${selectedNews?.id === item.id ? 'active' : ''} ${item.isSensitive ? 'sensitive-border' : ''}`}
-                      onClick={() => {
-                        setSelectedNews(item);
-                        setCustomUrl('');
-                        setCustomContent('');
-                      }}
+                      className={`news-card glass-card ${item.isSensitive ? 'sensitive-border' : ''}`}
                     >
                       <div className="sources-badges-container">
                         {item.isSensitive && <span className="sensitive-tag"><AlertTriangle size={12} /> Sensible</span>}
@@ -595,15 +710,7 @@ function App() {
                 })}
             </div>
 
-            <footer className="selection-footer sticky-footer">
-              <button 
-                className="btn btn-primary" 
-                disabled={(!selectedNews && !customUrl && !customContent) || loading} 
-                onClick={() => handleGenerateSession()}
-              >
-                {loading ? <Loader2 className="spinner" /> : uiText[language].generateBtn}
-              </button>
-            </footer>
+
           </motion.div>
         )}
 
