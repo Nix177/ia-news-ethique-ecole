@@ -254,7 +254,6 @@ function App() {
         setLoading(true)
         try {
           const data = await newsService.getLatestNews(country)
-          console.log("Données reçues de n8n :", data);
           
           // Logique de "déballage" du JSON n8n
           if (data && data[0]?.message?.content) {
