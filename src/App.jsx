@@ -252,8 +252,25 @@ function App() {
     if (step === 'selection') {
       const fetchNews = async () => {
         setLoading(true)
-        const data = await newsService.getLatestNews(country)
-        setNews(data)
+        try {
+          const data = await newsService.getLatestNews(country)
+          
+          // Logique de "déballage" du JSON n8n
+          if (data && data[0]?.message?.content) {
+            const rawContent = data[0].message.content;
+            // On enlève les balises ```json et ```
+            const jsonString = rawContent.replace(/```json|```/g, '').trim();
+            const parsed = JSON.parse(jsonString);
+            
+            // On enregistre uniquement la liste des articles (clusters)
+            setNews(parsed.clusters || []);
+          } else {
+            setNews(Array.isArray(data) ? data : []);
+          }
+        } catch (error) {
+          console.error("Erreur de parsing des news:", error);
+          setNews([]);
+        }
         setLoading(false)
       }
       fetchNews()
@@ -289,8 +306,8 @@ function App() {
   };
 
   const finalDisplayNews = React.useMemo(() => {
-    // 1. On récupère la liste brute (soit l'objet clusters, soit le tableau news)
-    const rawList = news?.clusters || (Array.isArray(news) ? news : []);
+    // news est maintenant directement le tableau d'articles grâce au useEffect corrigé
+    const rawList = Array.isArray(news) ? news : [];
     
     return rawList.filter(item => {
       // Filtre A : Catégorie
