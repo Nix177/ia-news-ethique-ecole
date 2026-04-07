@@ -282,46 +282,36 @@ function App() {
 
   const getArticleCategory = (item) => {
     if (!item) return 'SOCIETY';
-    
-    const getString = (val) => {
-      if (!val) return '';
-      if (typeof val === 'object') return (val[language] || val['fr'] || '');
-      return val;
-    };
+    const getString = (val) => (typeof val === 'object' ? (val[language] || val['fr'] || '') : (val || ''));
+    const content = (getString(item.topicTitle) + ' ' + getString(item.summary)).toLowerCase();
 
-    const titleStr = getString(item.topicTitle);
-    const summaryStr = getString(item.summary);
-    const content = (titleStr + ' ' + summaryStr).toLowerCase();
+    // Utilisation de RegExp avec \b pour ne matcher que les mots ENTIERS
+    const check = (regex) => new RegExp(`\\b(${regex})\\b`, 'i').test(content);
 
-    if (content.match(/sport|foot|boxe|jo|olympique|match|joueur|athlète|médaille|équipe|jeu|stade/)) return 'SPORT';
-    if (content.match(/justice|loi|règle|tribunal|police|triche|droit|interdit|procès|juge|prison|vol|crime/)) return 'JUSTICE';
-    if (content.match(/nature|climat|écologie|animal|animaux|météo|pollution|eau|forêt|planète|terre|environnement/)) return 'NATURE';
-    if (content.match(/tech|écran|internet|ia|robot|espace|science|futur|téléphone|réseau|virtuel|algorithme|lune|nasa|astronaute/)) return 'TECH';
-    if (content.match(/identité|émotion|peur|joie|différence|genre|fille|garçon|sentiment|amour|tristesse|sexisme/)) return 'IDENTITY';
-    if (content.match(/santé|maladie|hôpital|médecin|alimentation|nourriture|handicap|corps|soin|virus|sucre/)) return 'HEALTH';
-    if (content.match(/art|musique|film|livre|histoire|peinture|musée|artiste|culture|beauté|cinéma/)) return 'CULTURE';
-    if (content.match(/vrai|faux|rumeur|mensonge|secret|fake|croyance|information|journaliste|complot/)) return 'TRUTH';
-    if (content.match(/argent|riche|pauvre|métier|travail|acheter|vendre|prix|économie|entreprise|salaire/)) return 'MONEY';
+    if (check('sport|foot|boxe|jo|olympique|match|joueur|athlète|médaille|stade')) return 'SPORT';
+    if (check('justice|loi|règle|tribunal|police|triche|droit|interdit|procès|juge|prison|vol|crime')) return 'JUSTICE';
+    if (check('nature|climat|écologie|animal|animaux|météo|pollution|eau|forêt|planète|terre|environnement|inondation')) return 'NATURE';
+    if (check('tech|écran|internet|ia|robot|espace|science|futur|téléphone|réseau|virtuel|algorithme|lune|nasa|astronaute|numérique')) return 'TECH';
+    if (check('identité|émotion|peur|joie|différence|genre|fille|garçon|sentiment|amour|tristesse|sexisme')) return 'IDENTITY';
+    if (check('santé|maladie|hôpital|médecin|alimentation|nourriture|handicap|corps|soin|virus|sucre')) return 'HEALTH';
+    if (check('art|musique|film|livre|histoire|peinture|musée|artiste|culture|beauté|cinéma')) return 'CULTURE';
+    if (check('vrai|faux|rumeur|mensonge|secret|fake|croyance|information|journaliste|complot')) return 'TRUTH';
+    if (check('argent|riche|pauvre|métier|travail|acheter|vendre|prix|économie|entreprise|salaire|tourisme')) return 'MONEY';
     
     return 'SOCIETY';
   };
 
   const finalDisplayNews = React.useMemo(() => {
-    // news est maintenant directement le tableau d'articles grâce au useEffect corrigé
-    const rawList = Array.isArray(news) ? news : [];
+    // On force la lecture en tableau (vu les logs de 152 items)
+    const rawList = Array.isArray(news) ? news : (news?.clusters || []);
     
     return rawList.filter(item => {
-      // Filtre A : Catégorie
       const itemCat = getArticleCategory(item);
+      const matchesCategory = activeCategory === 'ALL' || itemCat === activeCategory;
       
-      // Filtre B : Recherche par mot-clé
       const getString = (val) => (typeof val === 'object' ? (val[language] || val['fr'] || '') : (val || ''));
       const title = getString(item.topicTitle).toLowerCase();
       const summary = getString(item.summary).toLowerCase();
-
-      console.log(`Article: ${title} -> Catégorie trouvée: ${itemCat}`);
-
-      const matchesCategory = activeCategory === 'ALL' || itemCat === activeCategory;
       const matchesSearch = title.includes(searchTerm.toLowerCase()) || summary.includes(searchTerm.toLowerCase());
 
       return matchesCategory && matchesSearch;
