@@ -254,6 +254,7 @@ function App() {
         setLoading(true)
         try {
           const data = await newsService.getLatestNews(country)
+          console.log("Données reçues de n8n :", data);
           
           // Logique de "déballage" du JSON n8n
           if (data && data[0]?.message?.content) {
@@ -311,6 +312,9 @@ function App() {
       const getString = (val) => (typeof val === 'object' ? (val[language] || val['fr'] || '') : (val || ''));
       const title = getString(item.topicTitle).toLowerCase();
       const summary = getString(item.summary).toLowerCase();
+
+      console.log(`Article: ${title} -> Catégorie trouvée: ${itemCat}`);
+
       const matchesSearch = title.includes(searchTerm.toLowerCase()) || summary.includes(searchTerm.toLowerCase());
 
       return matchesCategory && matchesSearch;
