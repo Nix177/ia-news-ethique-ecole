@@ -263,26 +263,49 @@ function App() {
   const handleStart = () => setStep('selection')
 
   const getArticleCategory = (item) => {
-    if (!item || typeof item !== 'object') return 'SOCIETY';
-    const titleStr = typeof item.topicTitle === 'object' ? (item.topicTitle[language] || item.topicTitle['fr'] || '') : (item.topicTitle || '');
-    const summaryStr = typeof item.summary === 'object' ? (item.summary[language] || item.summary['fr'] || '') : (item.summary || '');
+    if (!item) return 'SOCIETY';
+    
+    const getString = (val) => {
+      if (!val) return '';
+      if (typeof val === 'object') return (val[language] || val['fr'] || '');
+      return val;
+    };
+
+    const titleStr = getString(item.topicTitle);
+    const summaryStr = getString(item.summary);
     const content = (titleStr + ' ' + summaryStr).toLowerCase();
+
     if (content.match(/sport|foot|boxe|jo|olympique|match|joueur|athlète|médaille|équipe|jeu|stade/)) return 'SPORT';
     if (content.match(/justice|loi|règle|tribunal|police|triche|droit|interdit|procès|juge|prison|vol|crime/)) return 'JUSTICE';
     if (content.match(/nature|climat|écologie|animal|animaux|météo|pollution|eau|forêt|planète|terre|environnement/)) return 'NATURE';
-    if (content.match(/tech|écran|internet|ia|robot|espace|science|futur|téléphone|réseau|virtuel|algorithme/)) return 'TECH';
+    if (content.match(/tech|écran|internet|ia|robot|espace|science|futur|téléphone|réseau|virtuel|algorithme|lune|nasa|astronaute/)) return 'TECH';
     if (content.match(/identité|émotion|peur|joie|différence|genre|fille|garçon|sentiment|amour|tristesse|sexisme/)) return 'IDENTITY';
-    if (content.match(/santé|maladie|hôpital|médecin|alimentation|nourriture|handicap|corps|soin|virus/)) return 'HEALTH';
+    if (content.match(/santé|maladie|hôpital|médecin|alimentation|nourriture|handicap|corps|soin|virus|sucre/)) return 'HEALTH';
     if (content.match(/art|musique|film|livre|histoire|peinture|musée|artiste|culture|beauté|cinéma/)) return 'CULTURE';
     if (content.match(/vrai|faux|rumeur|mensonge|secret|fake|croyance|information|journaliste|complot/)) return 'TRUTH';
     if (content.match(/argent|riche|pauvre|métier|travail|acheter|vendre|prix|économie|entreprise|salaire/)) return 'MONEY';
+    
     return 'SOCIETY';
   };
 
-  const filteredNews = news.filter(item => {
-    if (activeCategory === 'ALL') return true;
-    return getArticleCategory(item) === activeCategory;
-  });
+  const finalDisplayNews = React.useMemo(() => {
+    // 1. On récupère la liste brute (soit l'objet clusters, soit le tableau news)
+    const rawList = news?.clusters || (Array.isArray(news) ? news : []);
+    
+    return rawList.filter(item => {
+      // Filtre A : Catégorie
+      const itemCat = getArticleCategory(item);
+      const matchesCategory = activeCategory === 'ALL' || itemCat === activeCategory;
+      
+      // Filtre B : Recherche par mot-clé
+      const getString = (val) => (typeof val === 'object' ? (val[language] || val['fr'] || '') : (val || ''));
+      const title = getString(item.topicTitle).toLowerCase();
+      const summary = getString(item.summary).toLowerCase();
+      const matchesSearch = title.includes(searchTerm.toLowerCase()) || summary.includes(searchTerm.toLowerCase());
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [news, activeCategory, searchTerm, language]);
 
   const handleGenerateSession = async (item = null) => {
     // Si on a un lien ou un texte custom, on force isCustom: true
@@ -630,18 +653,7 @@ function App() {
             </div>
 
             <div className="grid">
-              {filteredNews
-                .filter(item => {
-                  const titleObj = item.topicTitle;
-                  const title = typeof titleObj === 'object' ? (titleObj[language] || titleObj['fr'] || '') : (titleObj || '');
-
-                  const summaryObj = item.summary;
-                  const summary = typeof summaryObj === 'object' ? (summaryObj[language] || summaryObj['fr'] || '') : (summaryObj || '');
-                  
-                  return (title || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         (summary || '').toLowerCase().includes(searchTerm.toLowerCase());
-                })
-                .map((item) => {
+              {finalDisplayNews.map((item) => {
                   const titleObj = item.topicTitle;
                   const title = typeof titleObj === 'object' ? (titleObj[language] || titleObj['fr'] || '') : (titleObj || '');
 
