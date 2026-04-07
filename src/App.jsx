@@ -280,41 +280,17 @@ function App() {
 
   const handleStart = () => setStep('selection')
 
-  const getArticleCategory = (item) => {
-    if (!item) return 'SOCIETY';
-    const getString = (val) => (typeof val === 'object' ? (val[language] || val['fr'] || '') : (val || ''));
-    const content = (getString(item.topicTitle) + ' ' + getString(item.summary)).toLowerCase();
-
-    // Utilisation de RegExp avec \b pour ne matcher que les mots ENTIERS
-    const check = (regex) => new RegExp(`\\b(${regex})\\b`, 'i').test(content);
-
-    if (check('sport|foot|boxe|jo|olympique|match|joueur|athlète|médaille|stade')) return 'SPORT';
-    if (check('justice|loi|règle|tribunal|police|triche|droit|interdit|procès|juge|prison|vol|crime')) return 'JUSTICE';
-    if (check('nature|climat|écologie|animal|animaux|météo|pollution|eau|forêt|planète|terre|environnement|inondation')) return 'NATURE';
-    if (check('tech|écran|internet|ia|robot|espace|science|futur|téléphone|réseau|virtuel|algorithme|lune|nasa|astronaute|numérique')) return 'TECH';
-    if (check('identité|émotion|peur|joie|différence|genre|fille|garçon|sentiment|amour|tristesse|sexisme')) return 'IDENTITY';
-    if (check('santé|maladie|hôpital|médecin|alimentation|nourriture|handicap|corps|soin|virus|sucre')) return 'HEALTH';
-    if (check('art|musique|film|livre|histoire|peinture|musée|artiste|culture|beauté|cinéma')) return 'CULTURE';
-    if (check('vrai|faux|rumeur|mensonge|secret|fake|croyance|information|journaliste|complot')) return 'TRUTH';
-    if (check('argent|riche|pauvre|métier|travail|acheter|vendre|prix|économie|entreprise|salaire|tourisme')) return 'MONEY';
-    
-    return 'SOCIETY';
-  };
-
   const finalDisplayNews = React.useMemo(() => {
-    // On force la lecture en tableau (vu les logs de 152 items)
     const rawList = Array.isArray(news) ? news : (news?.clusters || []);
     
     return rawList.filter(item => {
-      const itemCat = getArticleCategory(item);
+      // On utilise la catégorie envoyée par l'IA (en majuscules par sécurité)
+      const itemCat = (item.category || 'SOCIETY').toUpperCase();
       const matchesCategory = activeCategory === 'ALL' || itemCat === activeCategory;
       
       const getString = (val) => (typeof val === 'object' ? (val[language] || val['fr'] || '') : (val || ''));
       const title = getString(item.topicTitle).toLowerCase();
       const summary = getString(item.summary).toLowerCase();
-
-      console.log(`Article: ${title} -> Catégorie trouvée: ${itemCat}`);
-
       const matchesSearch = title.includes(searchTerm.toLowerCase()) || summary.includes(searchTerm.toLowerCase());
 
       return matchesCategory && matchesSearch;
