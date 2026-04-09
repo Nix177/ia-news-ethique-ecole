@@ -25,11 +25,11 @@ export const aiGenerator = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           topicTitle: titleString,
-          // CORRECTION : On envoie la catégorie pour le routage de l'IA
+          // On envoie la catégorie pour que l'IA sache quel dilemme choisir
           category: newsCluster.category || "SOCIETY", 
           sources: newsCluster.sources || [],
-          summary: summaryString,
-          customArticleText: newsCluster.content || "",
+          summary: summaryString, 
+          customArticleText: newsCluster.content || "", 
           ageRange: ageRange,
           isCustom: newsCluster.isCustom || false,
           language: language
