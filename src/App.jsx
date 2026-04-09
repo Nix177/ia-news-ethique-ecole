@@ -254,50 +254,49 @@ function App() {
         setLoading(true);
         try {
           const data = await newsService.getLatestNews(country);
-
           console.log("🔥 ANALYSE BRUTE N8N :", data);
-          
-          let rawContent = "";
-          if (Array.isArray(data) && data[0]?.message?.content) {
-            rawContent = data[0].message.content;
-          } else if (typeof data === 'string') {
-            rawContent = data;
-          } else {
-            rawContent = JSON.stringify(data);
+
+          let list = [];
+
+          // CAS 1 : n8n envoie directement un tableau de news (Ce qui t'arrive en ce moment)
+          if (Array.isArray(data) && !data[0]?.message?.content) {
+            // Si les données sont encapsulées dans "fields" (typiques d'Airtable) on les extrait, sinon on prend l'item direct
+            list = data.map(item => item.fields ? item.fields : item);
+          } 
+          // CAS 2 : Format brut OpenAI (message.content)
+          else if (Array.isArray(data) && data[0]?.message?.content) {
+            const cleanText = data[0].message.content.replace(/```json/gi, '').replace(/```/g, '').trim();
+            const parsed = JSON.parse(cleanText);
+            list = parsed.clusters || [];
+          }
+          // CAS 3 : n8n envoie du texte pur (String JSON)
+          else if (typeof data === 'string') {
+            const cleanText = data.replace(/```json/gi, '').replace(/```/g, '').trim();
+            const parsed = JSON.parse(cleanText);
+            list = parsed.clusters || [];
+          }
+          // CAS 4 : n8n envoie un objet qui contient un tableau "clusters"
+          else if (data && data.clusters) {
+            list = data.clusters;
           }
 
-          if (rawContent) {
-            // On extrait directement l'objet JSON sans toucher aux URL (//)
-            const jsonMatch = rawContent.match(/\{[\s\S]*\}/);
-            
-            if (jsonMatch) {
-              let parsed;
-              try {
-                // Parsing direct
-                parsed = JSON.parse(jsonMatch[0]);
-              } catch (parseError) {
-                console.warn("Échec du parse standard, nettoyage des guillemets internes...");
-                // Sécurité uniquement pour les guillemets mal fermés par l'IA
-                const doubleCleaned = jsonMatch[0]
-                  .replace(/([a-zA-Z0-9])"([a-zA-Z0-9])/g, '$1\\"$2')
-                  .replace(/":\s*"([^"]*)"([^",}])/g, '": "$1\\"$2');
-                
-                parsed = JSON.parse(doubleCleaned);
-              }
-
-              let list = parsed.clusters || [];
-              
-              // Harmonisation des tags pays (SUISSE -> SWITZERLAND)
-              list = list.map(item => ({
-                ...item,
-                countries: item.countries?.map(c => 
-                  (c === 'SUISSE' || c === 'CH') ? 'SWITZERLAND' : c
-                ) || []
-              }));
-
-              setNews(list);
+          // DERNIÈRE ÉTAPE : On s'assure que le champ pays est bien harmonisé pour les filtres
+          list = list.map(item => {
+            // Petit hack au cas où Airtable ait renvoyé certains champs JSON sous forme de texte
+            let parsedItem = { ...item };
+            if (typeof parsedItem.countries === 'string' && parsedItem.countries.startsWith('[')) {
+              try { parsedItem.countries = JSON.parse(parsedItem.countries); } catch(e){}
             }
-          }
+
+            return {
+              ...parsedItem,
+              countries: Array.isArray(parsedItem.countries) 
+                ? parsedItem.countries.map(c => (c === 'SUISSE' || c === 'CH') ? 'SWITZERLAND' : c)
+                : []
+            };
+          });
+
+          setNews(list);
         } catch (error) {
           console.error("Erreur de lecture des actualités :", error);
           setNews([]);
