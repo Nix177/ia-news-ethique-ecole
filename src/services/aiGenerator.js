@@ -27,6 +27,7 @@ export const aiGenerator = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           topicTitle: titleString,
+          category: newsCluster.category ? (Array.isArray(newsCluster.category) ? newsCluster.category[0] : newsCluster.category) : "SOCIETY", 
           sources: newsCluster.sources || [],
           summary: summaryString, // Résumé de l'IA
           customArticleText: newsCluster.content || "", // Texte copié-collé par l'utilisateur
