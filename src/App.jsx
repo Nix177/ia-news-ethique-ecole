@@ -273,7 +273,21 @@ function App() {
             const jsonMatch = cleanedContent.match(/\{[\s\S]*\}/);
             
             if (jsonMatch) {
-              const parsed = JSON.parse(jsonMatch[0]);
+              let parsed;
+              try {
+                // Tentative de parsing direct
+                parsed = JSON.parse(jsonMatch[0]);
+              } catch (parseError) {
+                console.warn("Échec du parse standard, tentative de nettoyage des guillemets...");
+                // NETTOYAGE DE SECOURS :
+                // On essaie de corriger les guillemets internes qui ne sont pas précédés d'un backslash
+                const doubleCleaned = jsonMatch[0]
+                  .replace(/([a-zA-Z0-9])"([a-zA-Z0-9])/g, '$1\\"$2') // "Mot"Mot" -> "Mot\"Mot"
+                  .replace(/":\s*"([^"]*)"([^",}])/g, '": "$1\\"$2'); // Gère les cas complexes
+                
+                parsed = JSON.parse(doubleCleaned);
+              }
+
               let list = parsed.clusters || [];
               
               // 3. Harmonisation des tags pays (SUISSE -> SWITZERLAND)
