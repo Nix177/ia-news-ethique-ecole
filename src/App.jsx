@@ -251,32 +251,51 @@ function App() {
   useEffect(() => {
     if (step === 'selection') {
       const fetchNews = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
-          const data = await newsService.getLatestNews(country)
-          console.log("Données reçues de n8n :", data);
+          const data = await newsService.getLatestNews(country);
           
-          // Logique de "déballage" du JSON n8n
-          if (data && data[0]?.message?.content) {
-            const rawContent = data[0].message.content;
-            // On enlève les balises ```json et ```
-            const jsonString = rawContent.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(jsonString);
-            
-            // On enregistre uniquement la liste des articles (clusters)
-            setNews(parsed.clusters || []);
+          let rawContent = "";
+          if (Array.isArray(data) && data[0]?.message?.content) {
+            rawContent = data[0].message.content;
+          } else if (typeof data === 'string') {
+            rawContent = data;
           } else {
-            setNews(Array.isArray(data) ? data : []);
+            // Si data est déjà un objet, on le convertit en string pour le nettoyage
+            rawContent = JSON.stringify(data);
+          }
+
+          if (rawContent) {
+            // 1. On retire les commentaires // qui cassent le JSON
+            const cleanedContent = rawContent.replace(/\/\/.*$/gm, '');
+            
+            // 2. On extrait l'objet JSON (entre le premier { et le dernier })
+            const jsonMatch = cleanedContent.match(/\{[\s\S]*\}/);
+            
+            if (jsonMatch) {
+              const parsed = JSON.parse(jsonMatch[0]);
+              let list = parsed.clusters || [];
+              
+              // 3. Harmonisation des tags pays (SUISSE -> SWITZERLAND)
+              list = list.map(item => ({
+                ...item,
+                countries: item.countries?.map(c => 
+                  (c === 'SUISSE' || c === 'CH') ? 'SWITZERLAND' : c
+                ) || []
+              }));
+
+              setNews(list);
+            }
           }
         } catch (error) {
-          console.error("Erreur de parsing des news:", error);
+          console.error("Erreur de lecture des actualités :", error);
           setNews([]);
         }
-        setLoading(false)
-      }
-      fetchNews()
+        setLoading(false);
+      };
+      fetchNews();
     }
-  }, [step, country])
+  }, [step, country]);
 
   const handleStart = () => setStep('selection')
 
