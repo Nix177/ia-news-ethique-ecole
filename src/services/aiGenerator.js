@@ -11,12 +11,10 @@ export const aiGenerator = {
   async generateSession(newsCluster, ageRange, language = 'fr') {
     const N8N_WEBHOOK_URL = 'https://n8n.srv893937.hstgr.cloud/webhook/generate-lesson';
 
-    // 1. Extraire le titre sous forme de texte simple (pour éviter le crash de l'objet)
     const titleString = typeof newsCluster.topicTitle === 'object'
       ? (newsCluster.topicTitle[language] || newsCluster.topicTitle['fr'] || 'Sujet')
       : (newsCluster.topicTitle || 'Sujet');
 
-    // 2. Extraire le résumé sous forme de texte simple
     const summaryString = typeof newsCluster.summary === 'object'
       ? (newsCluster.summary[language] || newsCluster.summary['fr'] || '')
       : (newsCluster.summary || '');
@@ -27,10 +25,11 @@ export const aiGenerator = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           topicTitle: titleString,
-          category: newsCluster.category ? (Array.isArray(newsCluster.category) ? newsCluster.category[0] : newsCluster.category) : "SOCIETY", 
+          // CORRECTION : On envoie la catégorie pour le routage de l'IA
+          category: newsCluster.category || "SOCIETY", 
           sources: newsCluster.sources || [],
-          summary: summaryString, // Résumé de l'IA
-          customArticleText: newsCluster.content || "", // Texte copié-collé par l'utilisateur
+          summary: summaryString,
+          customArticleText: newsCluster.content || "",
           ageRange: ageRange,
           isCustom: newsCluster.isCustom || false,
           language: language
@@ -50,8 +49,6 @@ export const aiGenerator = {
 
   _getMockSession(cluster, ageRange, titleString, summaryString) {
     const config = AGE_CONFIGS[ageRange] || AGE_CONFIGS['8-9'];
-
-    // On utilise "titleString" (qui est bien du texte) pour éviter le crash !
     const isSensitive = titleString.toLowerCase().match(/guerre|conflit|mort|accident|justice|prison/);
 
     return {
@@ -62,8 +59,6 @@ export const aiGenerator = {
         : null,
       theoreticalContext: `Nous aborderons les notions de faits vs opinions et le concept de ${config.focus}.`,
       newsSummary: summaryString || "L'actualité traitée sous un angle accessible.",
-      sourceComparison: cluster.isCustom ? "L'IA a comparé votre texte avec d'autres sources. Une mise en perspective a été générée." : null,
-      aPrioriAnalysis: "Les élèves pourraient projeter leurs propres inquiétudes. Il s'agira de transformer l'émotion en questionnement éthique.",
       mainQuestion: `En quoi cet événement nous parle-t-il de ${config.focus} ?`,
       discussionGuide: [
         { question: "Qu'avez-vous ressenti en écoutant cette information ?", purpose: "Libérer la parole émotionnelle." },
