@@ -313,38 +313,20 @@ function App() {
     const rawList = Array.isArray(news) ? news : (news?.clusters || []);
     
     return rawList.filter(item => {
-      // 1. Normalisation des catégories (Gère String OU Array)
-      let itemCategories = [];
-      if (Array.isArray(item.category)) {
-        itemCategories = item.category.map(c => c.toUpperCase());
-      } else if (typeof item.category === 'string') {
-        itemCategories = [item.category.toUpperCase()];
-      } else {
-        itemCategories = ['SOCIETY'];
-      }
+      // On utilise la catégorie envoyée par l'IA (en majuscules par sécurité)
+      const itemCat = (item.category || 'SOCIETY').toUpperCase();
+      const matchesCategory = activeCategory === 'ALL' || itemCat === activeCategory;
       
-      // 2. MAPPAGE DE SECOURS (pour les anciens articles)
-      itemCategories = itemCategories.map(cat => 
-        ['ACTUALITÉ', 'ACTUALITE', 'INTERNATIONAL', 'DIVERS'].includes(cat) ? 'SOCIETY' : cat
-      );
-
-      // 3. Filtre de catégorie : On vérifie si la catégorie cliquée est DANS la liste de l'article
-      const matchesCategory = activeCategory === 'ALL' || itemCategories.includes(activeCategory);
-      
-      // 4. Filtre de recherche
       const getString = (val) => (typeof val === 'object' ? (val[language] || val['fr'] || '') : (val || ''));
       const title = getString(item.topicTitle).toLowerCase();
       const summary = getString(item.summary).toLowerCase();
       const matchesSearch = title.includes(searchTerm.toLowerCase()) || summary.includes(searchTerm.toLowerCase());
 
-      // 5. Filtre par pays
-      const itemCountries = Array.isArray(item.countries) ? item.countries : [];
-      const normalizedCountries = itemCountries.map(c => (c === 'SUISSE' || c === 'CH') ? 'SWITZERLAND' : c);
-      const matchesCountry = country === 'GLOBAL' || normalizedCountries.includes(country);
+      console.log(`Article: ${title} -> Catégorie trouvée: ${itemCat}`);
 
-      return matchesCategory && matchesSearch && matchesCountry;
+      return matchesCategory && matchesSearch;
     });
-  }, [news, activeCategory, searchTerm, language, country]);
+  }, [news, activeCategory, searchTerm, language]);
 
   const handleGenerateSession = async (item = null) => {
     // Si on a un lien ou un texte custom, on force isCustom: true
@@ -824,8 +806,10 @@ function App() {
               {/* 2. OUTIL MÉDIATEUR (Le détour) */}
               {session.mediatorTool && (
                 <section className="guide-section mediator-box">
-                  <h3><Sparkles size={20} /> {uiText[language].mediatorTitle}</h3>
-                  <p style={{ fontWeight: '500', fontSize: '1.1rem' }}>{session.mediatorTool}</p>
+                  <h3>
+                    <Sparkles size={20} /> {uiText[language].mediatorTitle}
+                  </h3>
+                  <p>{session.mediatorTool}</p>
                 </section>
               )}
 
@@ -871,36 +855,21 @@ function App() {
                 </section>
               )}
 
-              {/* NOUVEAU : RÔLES DÉMOCRATIQUES */}
-              {session.democraticRoles && (
-                <section className="guide-section highlight">
-                  <h3><Layers size={18} /> Organisation de la classe (Rôles)</h3>
-                  <div className="roles-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
-                    {session.democraticRoles.map((r, i) => (
-                      <div key={i} style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '0.8rem' }}>
-                        <strong style={{ color: 'var(--secondary)', display: 'block', marginBottom: '5px' }}>{r.role}</strong>
-                        <span style={{ fontSize: '0.85rem' }}>{r.task}</span>
+                <section className="guide-section debate-box">
+                  <h3><MessageCircle size={20} /> {uiText[language].debateTitle}</h3>
+                  <div className="main-question-card">
+                    <h4>{uiText[language].problematicLabel}</h4>
+                    <p>"{session.mainQuestion}"</p>
+                  </div>
+                  <div className="discussion-guide">
+                    {session.discussionGuide?.map((item, i) => (
+                      <div key={i} className="guide-item">
+                        <p><strong>{i + 1}. {item.question}</strong></p>
+                        <p className="q-purpose">🎯 {uiText[language].objectiveLabel} {item.purpose}</p>
                       </div>
                     ))}
                   </div>
                 </section>
-              )}
-
-              <section className="guide-section debate-box">
-                <h3><MessageCircle size={20} /> {uiText[language].debateTitle}</h3>
-                <div className="main-question-card">
-                  <h4>{uiText[language].problematicLabel}</h4>
-                  <p>"{session.mainQuestion}"</p>
-                </div>
-                <div className="discussion-guide">
-                  {session.discussionGuide?.map((item, i) => (
-                    <div key={i} className="guide-item">
-                      <p><strong>{i + 1}. {item.question}</strong></p>
-                      <p className="q-purpose">🎯 {item.purpose}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
                 
                 {/* NOUVEAU : ANTICIPATION DES ÉLÈVES (Bouées de sauvetage) */}
                 {session.studentAnticipation && session.studentAnticipation.length > 0 && (
