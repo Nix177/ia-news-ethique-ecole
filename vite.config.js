@@ -5,5 +5,5 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   // Remplacez 'ia-news-ethique-ecole' par le nom EXACT de votre dépôt GitHub
-  base: '/ia-news-ethique-ecole/', 
+  base: '/', 
 })
