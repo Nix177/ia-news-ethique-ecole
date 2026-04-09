@@ -25,8 +25,7 @@ export const aiGenerator = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           topicTitle: titleString,
-          // On envoie la catégorie pour que l'IA sache quel dilemme choisir
-          category: newsCluster.category || "SOCIETY", 
+          category: newsCluster.category || "SOCIETY", // Ajout de la catégorie
           sources: newsCluster.sources || [],
           summary: summaryString, 
           customArticleText: newsCluster.content || "", 
