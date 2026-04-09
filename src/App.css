@@ -401,6 +401,8 @@ select option {
 .intro-text-large {
   font-size: 1.15rem;
   color: var(--text-muted);
+  text-align: justify;
+  hyphens: auto; 
   line-height: 1.6;
   max-width: 800px;
   margin: 0 auto;
