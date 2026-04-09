@@ -313,20 +313,38 @@ function App() {
     const rawList = Array.isArray(news) ? news : (news?.clusters || []);
     
     return rawList.filter(item => {
-      // On utilise la catégorie envoyée par l'IA (en majuscules par sécurité)
-      const itemCat = (item.category || 'SOCIETY').toUpperCase();
-      const matchesCategory = activeCategory === 'ALL' || itemCat === activeCategory;
+      // 1. Normalisation des catégories (Gère String OU Array)
+      let itemCategories = [];
+      if (Array.isArray(item.category)) {
+        itemCategories = item.category.map(c => c.toUpperCase());
+      } else if (typeof item.category === 'string') {
+        itemCategories = [item.category.toUpperCase()];
+      } else {
+        itemCategories = ['SOCIETY'];
+      }
       
+      // 2. MAPPAGE DE SECOURS (pour les anciens articles)
+      itemCategories = itemCategories.map(cat => 
+        ['ACTUALITÉ', 'ACTUALITE', 'INTERNATIONAL', 'DIVERS'].includes(cat) ? 'SOCIETY' : cat
+      );
+
+      // 3. Filtre de catégorie : On vérifie si la catégorie cliquée est DANS la liste de l'article
+      const matchesCategory = activeCategory === 'ALL' || itemCategories.includes(activeCategory);
+      
+      // 4. Filtre de recherche
       const getString = (val) => (typeof val === 'object' ? (val[language] || val['fr'] || '') : (val || ''));
       const title = getString(item.topicTitle).toLowerCase();
       const summary = getString(item.summary).toLowerCase();
       const matchesSearch = title.includes(searchTerm.toLowerCase()) || summary.includes(searchTerm.toLowerCase());
 
-      console.log(`Article: ${title} -> Catégorie trouvée: ${itemCat}`);
+      // 5. Filtre par pays
+      const itemCountries = Array.isArray(item.countries) ? item.countries : [];
+      const normalizedCountries = itemCountries.map(c => (c === 'SUISSE' || c === 'CH') ? 'SWITZERLAND' : c);
+      const matchesCountry = country === 'GLOBAL' || normalizedCountries.includes(country);
 
-      return matchesCategory && matchesSearch;
+      return matchesCategory && matchesSearch && matchesCountry;
     });
-  }, [news, activeCategory, searchTerm, language]);
+  }, [news, activeCategory, searchTerm, language, country]);
 
   const handleGenerateSession = async (item = null) => {
     // Si on a un lien ou un texte custom, on force isCustom: true
