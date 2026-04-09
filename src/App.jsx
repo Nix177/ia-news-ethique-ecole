@@ -827,7 +827,14 @@ function App() {
                   <h3>
                     <Sparkles size={20} /> {uiText[language].mediatorTitle}
                   </h3>
-                  <p>{session.mediatorTool}</p>
+                  {/* On affiche la métaphore (l'histoire pour les enfants) */}
+                  <p style={{ fontWeight: '500', fontSize: '1.1rem', marginBottom: '1rem' }}>
+                    {session.mediatorTool.metaphor}
+                  </p>
+                  {/* On affiche la connexion (l'explication pour le prof) */}
+                  <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '0.5rem', fontSize: '0.9rem', borderLeft: '3px solid var(--primary)' }}>
+                    <strong>💡 Note pour l'enseignant :</strong> {session.mediatorTool.connection}
+                  </div>
                 </section>
               )}
 
@@ -873,21 +880,57 @@ function App() {
                 </section>
               )}
 
-                <section className="guide-section debate-box">
-                  <h3><MessageCircle size={20} /> {uiText[language].debateTitle}</h3>
-                  <div className="main-question-card">
-                    <h4>{uiText[language].problematicLabel}</h4>
-                    <p>"{session.mainQuestion}"</p>
-                  </div>
-                  <div className="discussion-guide">
-                    {session.discussionGuide?.map((item, i) => (
-                      <div key={i} className="guide-item">
-                        <p><strong>{i + 1}. {item.question}</strong></p>
-                        <p className="q-purpose">🎯 {uiText[language].objectiveLabel} {item.purpose}</p>
+              {/* NOUVEAU : RÔLES DÉMOCRATIQUES */}
+              {session.democraticRoles && (
+                <section className="guide-section highlight">
+                  <h3><Layers size={18} /> Organisation de la classe (Rôles)</h3>
+                  <div className="roles-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+                    {session.democraticRoles.map((r, i) => (
+                      <div key={i} style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '0.8rem' }}>
+                        <strong style={{ color: 'var(--secondary)', display: 'block', marginBottom: '5px' }}>{r.role}</strong>
+                        <span style={{ fontSize: '0.85rem' }}>{r.task}</span>
                       </div>
                     ))}
                   </div>
                 </section>
+              )}
+
+              <section className="guide-section debate-box">
+                <h3><MessageCircle size={20} /> {uiText[language].debateTitle}</h3>
+                <div className="main-question-card">
+                  <h4>{uiText[language].problematicLabel}</h4>
+                  <p>"{session.mainQuestion}"</p>
+                </div>
+                
+                <div className="discussion-guide">
+                  {/* Phase 1 : Conceptualisation */}
+                  <h4 className="phase-title">1. Conceptualisation (Définir)</h4>
+                  {session.discussionGuide?.conceptualization?.map((item, i) => (
+                    <div key={`c-${i}`} className="guide-item">
+                      <p><strong>{item.question}</strong></p>
+                      <p className="q-purpose">🎯 {item.purpose}</p>
+                    </div>
+                  ))}
+
+                  {/* Phase 2 : Problématisation */}
+                  <h4 className="phase-title" style={{ marginTop: '1.5rem' }}>2. Problématisation (Douter)</h4>
+                  {session.discussionGuide?.problematization?.map((item, i) => (
+                    <div key={`p-${i}`} className="guide-item">
+                      <p><strong>{item.question}</strong></p>
+                      <p className="q-purpose">🎯 {item.purpose}</p>
+                    </div>
+                  ))}
+
+                  {/* Phase 3 : Argumentation */}
+                  <h4 className="phase-title" style={{ marginTop: '1.5rem' }}>3. Argumentation (Justifier)</h4>
+                  {session.discussionGuide?.argumentation?.map((item, i) => (
+                    <div key={`a-${i}`} className="guide-item">
+                      <p><strong>{item.question}</strong></p>
+                      <p className="q-purpose">🎯 {item.purpose}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
                 
                 {/* NOUVEAU : ANTICIPATION DES ÉLÈVES (Bouées de sauvetage) */}
                 {session.studentAnticipation && session.studentAnticipation.length > 0 && (
