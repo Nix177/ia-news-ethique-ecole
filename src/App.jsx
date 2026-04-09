@@ -293,6 +293,8 @@ function App() {
       const summary = getString(item.summary).toLowerCase();
       const matchesSearch = title.includes(searchTerm.toLowerCase()) || summary.includes(searchTerm.toLowerCase());
 
+      console.log(`Article: ${title} -> Catégorie trouvée: ${itemCat}`);
+
       return matchesCategory && matchesSearch;
     });
   }, [news, activeCategory, searchTerm, language]);
