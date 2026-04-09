@@ -254,6 +254,8 @@ function App() {
         setLoading(true);
         try {
           const data = await newsService.getLatestNews(country);
+
+          console.log("🔥 ANALYSE BRUTE N8N :", data);
           
           let rawContent = "";
           if (Array.isArray(data) && data[0]?.message?.content) {
