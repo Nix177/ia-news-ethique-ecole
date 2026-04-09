@@ -261,36 +261,31 @@ function App() {
           } else if (typeof data === 'string') {
             rawContent = data;
           } else {
-            // Si data est déjà un objet, on le convertit en string pour le nettoyage
             rawContent = JSON.stringify(data);
           }
 
           if (rawContent) {
-            // 1. On retire les commentaires // qui cassent le JSON
-            const cleanedContent = rawContent.replace(/\/\/.*$/gm, '');
-            
-            // 2. On extrait l'objet JSON (entre le premier { et le dernier })
-            const jsonMatch = cleanedContent.match(/\{[\s\S]*\}/);
+            // On extrait directement l'objet JSON sans toucher aux URL (//)
+            const jsonMatch = rawContent.match(/\{[\s\S]*\}/);
             
             if (jsonMatch) {
               let parsed;
               try {
-                // Tentative de parsing direct
+                // Parsing direct
                 parsed = JSON.parse(jsonMatch[0]);
               } catch (parseError) {
-                console.warn("Échec du parse standard, tentative de nettoyage des guillemets...");
-                // NETTOYAGE DE SECOURS :
-                // On essaie de corriger les guillemets internes qui ne sont pas précédés d'un backslash
+                console.warn("Échec du parse standard, nettoyage des guillemets internes...");
+                // Sécurité uniquement pour les guillemets mal fermés par l'IA
                 const doubleCleaned = jsonMatch[0]
-                  .replace(/([a-zA-Z0-9])"([a-zA-Z0-9])/g, '$1\\"$2') // "Mot"Mot" -> "Mot\"Mot"
-                  .replace(/":\s*"([^"]*)"([^",}])/g, '": "$1\\"$2'); // Gère les cas complexes
+                  .replace(/([a-zA-Z0-9])"([a-zA-Z0-9])/g, '$1\\"$2')
+                  .replace(/":\s*"([^"]*)"([^",}])/g, '": "$1\\"$2');
                 
                 parsed = JSON.parse(doubleCleaned);
               }
 
               let list = parsed.clusters || [];
               
-              // 3. Harmonisation des tags pays (SUISSE -> SWITZERLAND)
+              // Harmonisation des tags pays (SUISSE -> SWITZERLAND)
               list = list.map(item => ({
                 ...item,
                 countries: item.countries?.map(c => 
