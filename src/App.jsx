@@ -903,29 +903,10 @@ function App() {
                 </div>
                 
                 <div className="discussion-guide">
-                  {/* Phase 1 : Conceptualisation */}
-                  <h4 className="phase-title">1. Conceptualisation (Définir)</h4>
-                  {session.discussionGuide?.conceptualization?.map((item, i) => (
-                    <div key={`c-${i}`} className="guide-item">
-                      <p><strong>{item.question}</strong></p>
-                      <p className="q-purpose">🎯 {item.purpose}</p>
-                    </div>
-                  ))}
-
-                  {/* Phase 2 : Problématisation */}
-                  <h4 className="phase-title" style={{ marginTop: '1.5rem' }}>2. Problématisation (Douter)</h4>
-                  {session.discussionGuide?.problematization?.map((item, i) => (
-                    <div key={`p-${i}`} className="guide-item">
-                      <p><strong>{item.question}</strong></p>
-                      <p className="q-purpose">🎯 {item.purpose}</p>
-                    </div>
-                  ))}
-
-                  {/* Phase 3 : Argumentation */}
-                  <h4 className="phase-title" style={{ marginTop: '1.5rem' }}>3. Argumentation (Justifier)</h4>
-                  {session.discussionGuide?.argumentation?.map((item, i) => (
-                    <div key={`a-${i}`} className="guide-item">
-                      <p><strong>{item.question}</strong></p>
+                  {/* RETOUR À LA LISTE SIMPLE : On boucle sur la liste plate du prompt */}
+                  {session.discussionGuide?.map((item, i) => (
+                    <div key={i} className="guide-item">
+                      <p><strong>{i + 1}. {item.question}</strong></p>
                       <p className="q-purpose">🎯 {item.purpose}</p>
                     </div>
                   ))}
