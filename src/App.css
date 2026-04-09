@@ -729,16 +729,60 @@ select option {
 }
 
 @media print {
-  body {
-    background: white;
-    color: black;
+  /* 1. Configuration de la page A4 */
+  @page {
+    size: A4 portrait;
+    margin: 15mm;
   }
-  .glass-card {
-    border: 1px solid #ccc;
-    box-shadow: none;
-    background: white;
+
+  /* 2. Masquer les éléments inutiles (Navigation, Boutons, Aide) */
+  .hero, 
+  .selection-view, 
+  .session-footer, 
+  .help-fab, 
+  .tutorial-overlay,
+  .badge,
+  .close-modal-btn {
+    display: none !important;
   }
-  .session-footer, .btn {
-    display: none;
+
+  /* 3. Reset du fond (Passage du sombre au clair) */
+  body, .container {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 4. Retirer les effets "Glassmorphism" pour le papier */
+  .glass-card, .session-view, .card, .guide-section {
+    background: white !important;
+    border: 1px solid #eee !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    color: black !important;
+    margin-bottom: 15px !important;
+  }
+
+  /* 5. Gérer le découpage des pages (Éviter de couper une question en deux) */
+  .guide-section, .guide-item, .card, .main-question-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* 6. Forcer le texte en noir pour la lisibilité */
+  h1, h2, h3, h4, p, span, li, strong {
+    color: black !important;
+  }
+
+  /* 7. Ajuster les grilles pour qu'elles s'empilent bien sur A4 */
+  .session-grid {
+    display: block !important;
+  }
+
+  /* 8. Rendre les liens visibles (optionnel) */
+  .source-link::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8rem;
   }
 }
