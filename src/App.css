@@ -729,60 +729,97 @@ select option {
 }
 
 @media print {
-  /* 1. Configuration de la page A4 */
+  /* 1. Configuration de la page A4 et Reset Global */
   @page {
     size: A4 portrait;
     margin: 15mm;
   }
 
-  /* 2. Masquer les éléments inutiles (Navigation, Boutons, Aide) */
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+    color: black !important;
+    font-size: 11pt; /* Taille idéale pour l'impression */
+  }
+
+  /* 2. Suppression des éléments d'interface */
   .hero, 
   .selection-view, 
   .session-footer, 
   .help-fab, 
   .tutorial-overlay,
   .badge,
-  .close-modal-btn {
+  .close-modal-btn,
+  .search-container {
     display: none !important;
   }
 
-  /* 3. Reset du fond (Passage du sombre au clair) */
-  body, .container {
-    background: white !important;
-    color: black !important;
+  /* 3. Mise en page de la fiche */
+  .container {
+    width: 100% !important;
+    max-width: none !important;
     padding: 0 !important;
     margin: 0 !important;
   }
 
-  /* 4. Retirer les effets "Glassmorphism" pour le papier */
-  .glass-card, .session-view, .card, .guide-section {
-    background: white !important;
-    border: 1px solid #eee !important;
+  .session-view {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
     box-shadow: none !important;
-    backdrop-filter: none !important;
-    color: black !important;
-    margin-bottom: 15px !important;
+    background: transparent !important;
   }
 
-  /* 5. Gérer le découpage des pages (Éviter de couper une question en deux) */
-  .guide-section, .guide-item, .card, .main-question-card {
-    page-break-inside: avoid;
+  .session-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2pt solid black !important;
+  }
+
+  .intro-text-large {
+    color: black !important;
+    text-align: justify;
+    margin-bottom: 2rem;
+  }
+
+  /* 4. Retirer le style "Glassmorphism" et forcer le contraste */
+  .guide-section, .card, .pedagogical-warning-box, .mediator-box, .main-question-card {
+    background: white !important;
+    border: 1px solid #ccc !important;
+    color: black !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    margin-bottom: 1.5rem !important;
+    page-break-inside: avoid; /* Évite de couper un bloc en deux */
     break-inside: avoid;
   }
 
-  /* 6. Forcer le texte en noir pour la lisibilité */
-  h1, h2, h3, h4, p, span, li, strong {
+  .main-question-card {
+    background: #f0f0f0 !important; /* Gris léger pour la question centrale */
+    border: 2px solid black !important;
+  }
+
+  /* 5. Typographie Impression */
+  h1, h2, h3, h4, p, li, strong, span {
     color: black !important;
+    background: transparent !important;
   }
 
-  /* 7. Ajuster les grilles pour qu'elles s'empilent bien sur A4 */
-  .session-grid {
+  h2 { font-size: 18pt !important; }
+  h3 { font-size: 14pt !important; }
+
+  /* 6. Correction des Grilles (Flex/Grid) */
+  .session-grid, .session-main, .session-sidebar {
     display: block !important;
+    width: 100% !important;
   }
 
-  /* 8. Rendre les liens visibles (optionnel) */
-  .source-link::after {
+  /* 7. Affichage des URLs des sources */
+  .sources-box a::after {
     content: " (" attr(href) ")";
-    font-size: 0.8rem;
+    font-size: 9pt;
+    font-style: italic;
   }
 }
