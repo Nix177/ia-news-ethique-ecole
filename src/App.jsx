@@ -824,17 +824,8 @@ function App() {
               {/* 2. OUTIL MÉDIATEUR (Le détour) */}
               {session.mediatorTool && (
                 <section className="guide-section mediator-box">
-                  <h3>
-                    <Sparkles size={20} /> {uiText[language].mediatorTitle}
-                  </h3>
-                  {/* On affiche la métaphore (l'histoire pour les enfants) */}
-                  <p style={{ fontWeight: '500', fontSize: '1.1rem', marginBottom: '1rem' }}>
-                    {session.mediatorTool.metaphor}
-                  </p>
-                  {/* On affiche la connexion (l'explication pour le prof) */}
-                  <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '0.5rem', fontSize: '0.9rem', borderLeft: '3px solid var(--primary)' }}>
-                    <strong>💡 Note pour l'enseignant :</strong> {session.mediatorTool.connection}
-                  </div>
+                  <h3><Sparkles size={20} /> {uiText[language].mediatorTitle}</h3>
+                  <p style={{ fontWeight: '500', fontSize: '1.1rem' }}>{session.mediatorTool}</p>
                 </section>
               )}
 
@@ -901,9 +892,7 @@ function App() {
                   <h4>{uiText[language].problematicLabel}</h4>
                   <p>"{session.mainQuestion}"</p>
                 </div>
-                
                 <div className="discussion-guide">
-                  {/* RETOUR À LA LISTE SIMPLE : On boucle sur la liste plate du prompt */}
                   {session.discussionGuide?.map((item, i) => (
                     <div key={i} className="guide-item">
                       <p><strong>{i + 1}. {item.question}</strong></p>
