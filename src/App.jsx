@@ -288,6 +288,10 @@ function App() {
               try { parsedItem.countries = JSON.parse(parsedItem.countries); } catch(e){}
             }
 
+            if (parsedItem.category && Array.isArray(parsedItem.category)) {
+              parsedItem.category = parsedItem.category[0];
+            }
+
             return {
               ...parsedItem,
               countries: Array.isArray(parsedItem.countries) 
