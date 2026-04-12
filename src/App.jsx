@@ -314,7 +314,7 @@ function App() {
     
     return rawList.filter(item => {
       // On utilise la catégorie envoyée par l'IA (en majuscules par sécurité)
-      const itemCat = (item.category || 'SOCIETY').toUpperCase();
+      const itemCat = (Array.isArray(item.category) ? item.category[0] : (item.category || 'SOCIETY')).toUpperCase();
       const matchesCategory = activeCategory === 'ALL' || itemCat === activeCategory;
       
       const getString = (val) => (typeof val === 'object' ? (val[language] || val['fr'] || '') : (val || ''));
