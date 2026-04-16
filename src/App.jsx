@@ -95,7 +95,7 @@ function App() {
       howStep2Desc: "Croisement de sources, adaptation à l'âge, détour pédagogique.",
       howStep3Title: "Débattez en classe",
       howStep3Desc: "Obtenez une fiche complète prête à l'emploi.",
-      catAll: 'Tous',
+      catAll: 'Tous (à venir aussi)',
       catSport: '🏆 Sport & Jeux',
       catJustice: '⚖️ Justice & Lois',
       catNature: '🌍 Nature & Planète',
