@@ -317,7 +317,7 @@ function App() {
     const rawList = Array.isArray(news) ? news : (news?.clusters || []);
     
     const filtered = rawList.filter(item => {
-      // 1. NORMALISATION DE LA CATÉGORIE
+      // --- 1. NORMALISATION ET FILTRAGE DES CATÉGORIES ---
       let rawCat = 'SOCIETY';
       if (Array.isArray(item.category)) {
         rawCat = item.category[0];
@@ -326,21 +326,16 @@ function App() {
       }
 
       const catMap = {
-        'TECHNOLOGY': 'TECH',
-        'SCIENCE': 'TECH',
-        'ENVIRONNEMENT': 'NATURE',
-        'ÉCOLOGIE': 'NATURE',
-        'POLITIQUE': 'SOCIETY',
-        'INTERNATIONAL': 'SOCIETY',
-        'ACTUALITÉ': 'SOCIETY',
-        'DIVERS': 'SOCIETY'
+        'TECHNOLOGY': 'TECH', 'SCIENCE': 'TECH',
+        'ENVIRONNEMENT': 'NATURE', 'ÉCOLOGIE': 'NATURE',
+        'POLITIQUE': 'SOCIETY', 'INTERNATIONAL': 'SOCIETY',
+        'ACTUALITÉ': 'SOCIETY', 'DIVERS': 'SOCIETY'
       };
 
       const itemCat = (catMap[rawCat.toUpperCase()] || rawCat.toUpperCase());
-
-      // 2. FILTRAGE
       const matchesCategory = activeCategory === 'ALL' || itemCat === activeCategory;
-      
+
+      // --- 2. FILTRAGE PAR MOTS-CLÉS (Sur contenu des tuiles uniquement) ---
       const getString = (val) => {
         if (!val) return '';
         if (typeof val === 'object') return (val[language] || val['fr'] || val['en'] || '');
@@ -350,20 +345,18 @@ function App() {
       const title = getString(item.topicTitle).toLowerCase();
       const summary = getString(item.summary).toLowerCase();
       const term = searchTerm.toLowerCase().trim();
+
+      // La recherche ne scanne que ce qui est visible dans la tuile (titre + résumé)
       const matchesSearch = term === '' || title.includes(term) || summary.includes(term);
 
-      // DEBUG : On ne logue que les articles qui sont REÇUS par le composant
-      if (matchesCategory && matchesSearch && activeCategory !== 'ALL') {
-         console.log(`✅ AFFICHÉ : ${title.substring(0, 30)} | Cat: ${itemCat}`);
-      }
-
+      // --- 3. COMBINAISON CUMULATIVE (Condition A ET Condition B) ---
       return matchesCategory && matchesSearch;
     });
 
-    // 3. SECURITÉ : Tri par date (les plus récents en premier) et IDs uniques
+    // Tri par date décroissante et ID unique pour le rendu React
     return filtered.map((item, index) => ({
       ...item,
-      displayId: `${item.id}-${index}` // On crée un ID unique pour forcer React à rafraîchir la carte
+      displayId: `${item.id}-${index}-${activeCategory}-${language}` 
     }));
   }, [news, activeCategory, searchTerm, language]);
 
