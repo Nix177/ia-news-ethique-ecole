@@ -317,16 +317,48 @@ function App() {
     const rawList = Array.isArray(news) ? news : (news?.clusters || []);
     
     return rawList.filter(item => {
-      // On utilise la catégorie envoyée par l'IA (en majuscules par sécurité)
-      const itemCat = (Array.isArray(item.category) ? item.category[0] : (item.category || 'SOCIETY')).toUpperCase();
+      // 1. NORMALISATION DE LA CATÉGORIE (Mapping IA vers UI)
+      let rawCat = 'SOCIETY';
+      if (Array.isArray(item.category)) {
+        rawCat = item.category[0];
+      } else if (typeof item.category === 'string') {
+        rawCat = item.category;
+      }
+
+      // Mapping de sécurité : Traduit les termes variables de l'IA en IDs techniques du site
+      const catMap = {
+        'TECHNOLOGY': 'TECH',
+        'SCIENCE': 'TECH',
+        'ENVIRONNEMENT': 'NATURE',
+        'ÉCOLOGIE': 'NATURE',
+        'POLITIQUE': 'SOCIETY',
+        'INTERNATIONAL': 'SOCIETY',
+        'ACTUALITÉ': 'SOCIETY',
+        'DIVERS': 'SOCIETY'
+      };
+
+      const itemCat = (catMap[rawCat.toUpperCase()] || rawCat.toUpperCase());
+
+      // 2. FILTRAGE PAR CATÉGORIE
       const matchesCategory = activeCategory === 'ALL' || itemCat === activeCategory;
       
-      const getString = (val) => (typeof val === 'object' ? (val[language] || val['fr'] || '') : (val || ''));
+      // 3. RECHERCHE PAR MOT-CLÉ (SÉCURISÉE)
+      const getString = (val) => {
+        if (!val) return '';
+        if (typeof val === 'object') return (val[language] || val['fr'] || val['en'] || '');
+        return String(val);
+      };
+
       const title = getString(item.topicTitle).toLowerCase();
       const summary = getString(item.summary).toLowerCase();
-      const matchesSearch = title.includes(searchTerm.toLowerCase()) || summary.includes(searchTerm.toLowerCase());
+      const term = searchTerm.toLowerCase().trim();
 
-      console.log(`Article: ${title} -> Catégorie trouvée: ${itemCat}`);
+      const matchesSearch = term === '' || title.includes(term) || summary.includes(term);
+
+      // Log de debug pour voir la transformation en direct dans la console
+      if (matchesSearch && activeCategory !== 'ALL') {
+         console.log(`Filtrage : ${title.substring(0, 20)}... | Brute: ${rawCat} -> Map: ${itemCat}`);
+      }
 
       return matchesCategory && matchesSearch;
     });
