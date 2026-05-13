@@ -316,8 +316,8 @@ function App() {
   const finalDisplayNews = React.useMemo(() => {
     const rawList = Array.isArray(news) ? news : (news?.clusters || []);
     
-    return rawList.filter(item => {
-      // 1. NORMALISATION DE LA CATÉGORIE (Mapping IA vers UI)
+    const filtered = rawList.filter(item => {
+      // 1. NORMALISATION DE LA CATÉGORIE
       let rawCat = 'SOCIETY';
       if (Array.isArray(item.category)) {
         rawCat = item.category[0];
@@ -325,7 +325,6 @@ function App() {
         rawCat = item.category;
       }
 
-      // Mapping de sécurité : Traduit les termes variables de l'IA en IDs techniques du site
       const catMap = {
         'TECHNOLOGY': 'TECH',
         'SCIENCE': 'TECH',
@@ -339,10 +338,9 @@ function App() {
 
       const itemCat = (catMap[rawCat.toUpperCase()] || rawCat.toUpperCase());
 
-      // 2. FILTRAGE PAR CATÉGORIE
+      // 2. FILTRAGE
       const matchesCategory = activeCategory === 'ALL' || itemCat === activeCategory;
       
-      // 3. RECHERCHE PAR MOT-CLÉ (SÉCURISÉE)
       const getString = (val) => {
         if (!val) return '';
         if (typeof val === 'object') return (val[language] || val['fr'] || val['en'] || '');
@@ -352,16 +350,21 @@ function App() {
       const title = getString(item.topicTitle).toLowerCase();
       const summary = getString(item.summary).toLowerCase();
       const term = searchTerm.toLowerCase().trim();
-
       const matchesSearch = term === '' || title.includes(term) || summary.includes(term);
 
-      // Log de debug pour voir la transformation en direct dans la console
-      if (matchesSearch && activeCategory !== 'ALL') {
-         console.log(`Filtrage : ${title.substring(0, 20)}... | Brute: ${rawCat} -> Map: ${itemCat}`);
+      // DEBUG : On ne logue que les articles qui sont REÇUS par le composant
+      if (matchesCategory && matchesSearch && activeCategory !== 'ALL') {
+         console.log(`✅ AFFICHÉ : ${title.substring(0, 30)} | Cat: ${itemCat}`);
       }
 
       return matchesCategory && matchesSearch;
     });
+
+    // 3. SECURITÉ : Tri par date (les plus récents en premier) et IDs uniques
+    return filtered.map((item, index) => ({
+      ...item,
+      displayId: `${item.id}-${index}` // On crée un ID unique pour forcer React à rafraîchir la carte
+    }));
   }, [news, activeCategory, searchTerm, language]);
 
   const handleGenerateSession = async (item = null) => {
@@ -719,7 +722,7 @@ function App() {
 
                   return (
                     <div 
-                      key={item.id} 
+                      key={item.displayId} 
                       className={`news-card glass-card ${item.isSensitive ? 'sensitive-border' : ''}`}
                     >
                       <div className="sources-badges-container">
