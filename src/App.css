@@ -587,6 +587,7 @@ select option {
   width: 100%;
   font-size: 1.1rem;
   outline: none;
+  color: black;
 }
 
 /* TUTORIAL MODAL & HELP TAB */
