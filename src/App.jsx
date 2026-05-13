@@ -48,7 +48,7 @@ function App() {
       curationTitle: "Curation du jour",
       curationSub: "Sujets à débattre avec les",
       backBtn: "Changer l'âge/pays",
-      searchPlaceholder: "(à venir) Filtrer par mot-clé (ex: climat, espace, justice...)",
+      searchPlaceholder: "Filtrer par mot-clé (ex: climat, espace, justice...)",
       prepareBtn: "Préparer la séance",
       generateBtn: "Générer la séance",
       generating: "Génération en cours...",
